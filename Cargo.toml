@@ -9,3 +9,6 @@ edition = "2021"
 
 [target.aarch64-apple-darwin]
 rustflags = ["-C", "link-arg=-fuse-ld=/opt/homebrew/opt/llvm/bin/ld64.lld"]
+
+[dev-dependencies]
+cargo-watch = "8.5.2"
