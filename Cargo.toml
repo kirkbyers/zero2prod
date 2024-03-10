@@ -14,7 +14,3 @@ rustflags = ["-C", "link-arg=-fuse-ld=/opt/homebrew/opt/llvm/bin/ld64.lld"]
 
 [target.x86_64-apple-darwin]
 rustflags = ["-C", "linker=clang", "link-arg=-fuse-ld=lld"]
-
-[dev-dependencies]
-cargo-expand = "1.0.79"
-cargo-watch = "8.5.2"
