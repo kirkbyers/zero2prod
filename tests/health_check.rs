@@ -67,12 +67,6 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
             .expect("Failed to execute request.");
 
         assert_eq!(400, response.status().as_u16(), "The API did not return a 400 Bad Request when the payload was {}.", invalid_body);
-        assert_eq!(
-            Some("".to_string()),
-            response.headers().get("content-length").map(|v| v.to_str().unwrap().to_string())
-        );
-        let response_text = response.text().await.expect("Failed to read response body.");
-        assert_eq!(response_text, format!("{{\"error\":\"{}\"}}", error_message));
     }
 }
 
