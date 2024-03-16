@@ -33,14 +33,20 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
 
     let test_cases = vec![
         ("{}", "missing both name and email"),
-        (r#"
+        (
+            r#"
         {
             "email": "some@email.co"
-        }"#, "missing name"),
-        (r#"
+        }"#,
+            "missing name",
+        ),
+        (
+            r#"
         {
             "name": "leeroy"
-        }"#, "missing email"),
+        }"#,
+            "missing email",
+        ),
     ];
 
     for (invalid_body, error_message) in test_cases {
@@ -52,6 +58,11 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
             .await
             .expect("Failed to execute request.");
 
-        assert_eq!(400, response.status().as_u16(), "The API did not return a 400 Bad Request when the payload was {}.", invalid_body);
+        assert_eq!(
+            400,
+            response.status().as_u16(),
+            "The API did not return a 400 Bad Request when the payload was {}.",
+            invalid_body
+        );
     }
 }
