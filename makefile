@@ -10,5 +10,5 @@ fmt:
 lint-ci:
 	cargo clippy -- -D warnings
 
-scan-ci:
-	cargo 
+test:
+	cargo test

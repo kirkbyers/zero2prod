@@ -1,6 +1,7 @@
 mod common;
 
 use common::spawn_app;
+use zero2prod::db::local_db;
 
 #[tokio::test]
 async fn subscribe_returns_a_200_for_valid_form_data() {
@@ -23,6 +24,27 @@ async fn subscribe_returns_a_200_for_valid_form_data() {
         .expect("Failed to execute request.");
 
     assert_eq!(200, response.status().as_u16());
+
+    let db = local_db().await.unwrap();
+    let conn = db.connect().unwrap();
+
+    let mut rows = conn
+        .query("SELECT email, name FROM subscriptions LIMIT 1", ())
+        .await
+        .unwrap();
+    let row = rows.next().await.expect("No rows returned").expect("Failed to get row");
+    let email_value = row
+        .get_value(0)
+        .expect("Failed to get email");
+    let email = email_value.as_text().expect("Failed to get email text");
+    let name_value = row
+        .get_value(1)
+        .expect("Failed to get name");
+    let name = name_value
+        .as_text()
+        .expect("Failed to get name text");
+    assert_eq!(email, "some@email.co");
+    assert_eq!(name, "leeroy");
 }
 
 #[tokio::test]
