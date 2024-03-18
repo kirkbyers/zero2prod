@@ -3,7 +3,7 @@ pub mod db;
 use std::net::TcpListener;
 
 use actix_web::{dev::Server, web, App, HttpResponse, HttpServer};
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
 async fn health_check() -> HttpResponse {
     HttpResponse::Ok().finish()
@@ -11,8 +11,8 @@ async fn health_check() -> HttpResponse {
 
 #[derive(Deserialize)]
 struct SubscriberData {
-    email: String,
-    name: String,
+    _email: String,
+    _name: String,
 }
 
 async fn subscribe(_json: web::Json<SubscriberData>) -> HttpResponse {
