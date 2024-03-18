@@ -1,5 +1,5 @@
-use serde::Deserialize;
 use actix_web::{web, HttpResponse};
+use serde::Deserialize;
 
 #[derive(Deserialize)]
 #[allow(dead_code)]

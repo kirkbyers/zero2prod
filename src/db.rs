@@ -18,6 +18,8 @@ async fn init_schema(conn: &Connection) {
             subscribed_at timestampz NOT NULL
         );
         "#,
-        ()
-    ).await.unwrap();
+        (),
+    )
+    .await
+    .unwrap();
 }

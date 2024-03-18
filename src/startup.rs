@@ -1,4 +1,7 @@
-use crate::{db, routes::{health_check, subscribe}};
+use crate::{
+    db,
+    routes::{health_check, subscribe},
+};
 
 use std::net::TcpListener;
 
