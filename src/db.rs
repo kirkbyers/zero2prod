@@ -1,5 +1,25 @@
-use libsql::{Builder, Database, Error};
+use libsql::{params, Builder, Connection, Database, Error};
 
 pub async fn new_local_db(path: &str) -> Result<Database, Error> {
-    Builder::new_local(path).build().await
+    let db = Builder::new_local(path).build().await?;
+    let conn = db.connect()?;
+    init_schema(&conn).await?;
+
+    Ok(db)
+}
+
+async fn init_schema(conn: &Connection) -> Result<(), Error> {
+    conn.execute(
+        r#"
+        CREATE TABLE IF NOT EXISTS subscriptions (
+            id uuid NOT NULL PRIMARY KEY,
+            email TEXT NOT NULL UNIQUE,
+            name TEXT NOT NULL,
+            subscribed_at timestampz NOT NULL
+        );
+        "#,
+        params!([])
+    )
+    .await?;
+    Ok(())
 }
