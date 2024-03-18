@@ -2,7 +2,7 @@ use libsql::{Builder, Connection, Database, Error};
 
 use crate::configuration::get_configuration;
 
-pub async fn new_local_db() -> Result<Database, Error> {
+pub async fn local_db() -> Result<Database, Error> {
     let config = get_configuration(None).expect("Failed to read configuration.");
     let path = config.database.local_file_path;
     let db = Builder::new_local(path).build().await?;
