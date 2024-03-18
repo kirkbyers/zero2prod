@@ -1,14 +1,14 @@
-use libsql::{params, Builder, Connection, Database, Error};
+use libsql::{Builder, Connection, Database, Error};
 
 pub async fn new_local_db(path: &str) -> Result<Database, Error> {
     let db = Builder::new_local(path).build().await?;
     let conn = db.connect()?;
-    init_schema(&conn).await?;
+    init_schema(&conn).await;
 
     Ok(db)
 }
 
-async fn init_schema(conn: &Connection) -> Result<(), Error> {
+async fn init_schema(conn: &Connection) {
     conn.execute(
         r#"
         CREATE TABLE IF NOT EXISTS subscriptions (
@@ -18,8 +18,6 @@ async fn init_schema(conn: &Connection) -> Result<(), Error> {
             subscribed_at timestampz NOT NULL
         );
         "#,
-        params!([])
-    )
-    .await?;
-    Ok(())
+        ()
+    ).await.unwrap();
 }

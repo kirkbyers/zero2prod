@@ -5,7 +5,7 @@ use common::spawn_app;
 #[tokio::test]
 async fn health_check_works() {
     // Arrange
-    let address = spawn_app();
+    let address = spawn_app().await;
 
     let client = reqwest::Client::new();
 
