@@ -32,17 +32,15 @@ async fn subscribe_returns_a_200_for_valid_form_data() {
         .query("SELECT email, name FROM subscriptions LIMIT 1", ())
         .await
         .unwrap();
-    let row = rows.next().await.expect("No rows returned").expect("Failed to get row");
-    let email_value = row
-        .get_value(0)
-        .expect("Failed to get email");
+    let row = rows
+        .next()
+        .await
+        .expect("No rows returned")
+        .expect("Failed to get row");
+    let email_value = row.get_value(0).expect("Failed to get email");
     let email = email_value.as_text().expect("Failed to get email text");
-    let name_value = row
-        .get_value(1)
-        .expect("Failed to get name");
-    let name = name_value
-        .as_text()
-        .expect("Failed to get name text");
+    let name_value = row.get_value(1).expect("Failed to get name");
+    let name = name_value.as_text().expect("Failed to get name text");
     assert_eq!(email, "some@email.co");
     assert_eq!(name, "leeroy");
 }

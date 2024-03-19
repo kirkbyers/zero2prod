@@ -8,6 +8,9 @@ pub struct SubscriberData {
     name: String,
 }
 
-pub async fn subscribe(_json: web::Json<SubscriberData>) -> HttpResponse {
+pub async fn subscribe(
+    _json: web::Json<SubscriberData>,
+    _connection: web::Data<libsql::Connection>,
+) -> HttpResponse {
     HttpResponse::Ok().finish()
 }
