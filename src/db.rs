@@ -5,8 +5,8 @@ use crate::configuration::get_configuration;
 pub async fn local_db() -> Result<Database, Error> {
     let config = get_configuration(None).expect("Failed to read configuration.");
     let path = config.database.local_file_path;
-    let db = Builder::new_local(path).build().await?;
-    let conn = db.connect()?;
+    let db = Builder::new_local(path).build().await.expect("Failed to create database.");
+    let conn = db.connect().expect("Failed to connect to database.");
     init_schema(&conn).await;
 
     Ok(db)
