@@ -82,7 +82,8 @@ impl Scraper {
         for c in html.chars() {
             copy.push(c);
             // skip script and style tags
-            if copy.ends_with("<script") || copy.ends_with("<style") || copy.ends_with("<noscript") {
+            if copy.ends_with("<script") || copy.ends_with("<style") || copy.ends_with("<noscript")
+            {
                 skip = true;
             }
             if copy.ends_with("</script>")
