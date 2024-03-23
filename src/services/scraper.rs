@@ -9,6 +9,12 @@ pub struct Scraper {
     headers: HeaderMap,
 }
 
+impl Default for Scraper {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Scraper {
     pub fn new() -> Self {
         let client = reqwest::Client::new();
@@ -67,44 +73,39 @@ impl Scraper {
         links
     }
 
-    pub fn parse_item_html(&self, html: &str) -> String {
-        let result = strip_html_tags(html);
-        result
-    }
-}
-
-fn strip_html_tags(html: &str) -> String {
-    let mut result = String::new();
-    let mut copy = String::new();
-    let mut inside = false;
-    let mut skip = false;
-    let mut skip_ws = false;
-    for c in html.chars() {
-        copy.push(c);
-        // skip script and style tags
-        if copy.ends_with("<script") || copy.ends_with("<style") || copy.ends_with("<noscript") {
-            skip = true;
-        }
-        if copy.ends_with("</script>")
-            || copy.ends_with("</style>")
-            || copy.ends_with("</noscript>")
-        {
-            skip = false;
-        }
-        if !c.is_whitespace() {
-            skip_ws = false;
-        }
-        if c == '<' {
-            inside = true;
-        } else if c == '>' {
-            inside = false;
-            result.push(' ');
-        } else if !inside && !skip && !skip_ws {
-            result.push(c);
-            if c.is_whitespace() {
-                skip_ws = true;
+    pub fn strip_html_tags(&self, html: &str) -> String {
+        let mut result = String::new();
+        let mut copy = String::new();
+        let mut inside = false;
+        let mut skip = false;
+        let mut skip_ws = false;
+        for c in html.chars() {
+            copy.push(c);
+            // skip script and style tags
+            if copy.ends_with("<script") || copy.ends_with("<style") || copy.ends_with("<noscript") {
+                skip = true;
+            }
+            if copy.ends_with("</script>")
+                || copy.ends_with("</style>")
+                || copy.ends_with("</noscript>")
+            {
+                skip = false;
+            }
+            if !c.is_whitespace() {
+                skip_ws = false;
+            }
+            if c == '<' {
+                inside = true;
+            } else if c == '>' {
+                inside = false;
+                result.push(' ');
+            } else if !inside && !skip && !skip_ws {
+                result.push(c);
+                if c.is_whitespace() {
+                    skip_ws = true;
+                }
             }
         }
+        result.replace('\n', "")
     }
-    result.replace("\n", "")
 }

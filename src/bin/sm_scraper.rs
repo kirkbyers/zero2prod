@@ -23,7 +23,7 @@ async fn main() {
             .get_url(links[0].as_str())
             .await
             .expect("Failed to get URL");
-        let item_text = scraper.parse_item_html(&item_html);
+        let item_text = scraper.strip_html_tags(&item_html);
         println!("Scraped item #{}: {}", i, item_text);
 
         let id = Uuid::new_v4();
