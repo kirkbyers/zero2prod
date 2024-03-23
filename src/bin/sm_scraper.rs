@@ -24,7 +24,6 @@ async fn main() {
             .await
             .expect("Failed to get URL");
         let item_text = scraper.strip_html_tags(&item_html);
-        println!("Scraped item #{}: {}", i, item_text);
 
         let id = Uuid::new_v4();
         let now = Utc::now();

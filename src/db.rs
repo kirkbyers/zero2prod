@@ -30,7 +30,7 @@ async fn init_schema(conn: &Connection) {
         r#"
     CREATE TABLE IF NOT EXISTS sm_scrapes (
         id uuid NOT NULL PRIMARY KEY,
-        url TEXT NOT NULL UNIQUE,
+        url TEXT NOT NULL,
         content TEXT NOT NULL,
         scraped_at timestampz NOT NULL
     );
