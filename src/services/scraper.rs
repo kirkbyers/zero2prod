@@ -2,7 +2,7 @@ use reqwest::header::{
     HeaderMap, ACCEPT, ACCEPT_LANGUAGE, CONNECTION, COOKIE, DNT, HOST, UPGRADE_INSECURE_REQUESTS,
     USER_AGENT,
 };
-use scraper::{selectable::Selectable, Html, Selector};
+use scraper::{Html, Selector};
 
 pub struct Scraper {
     _client: reqwest::Client,
