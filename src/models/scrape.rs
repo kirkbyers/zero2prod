@@ -10,22 +10,29 @@ pub struct ScrapeRow {
     pub embedding: Option<Vec<f32>>,
 }
 
-fn select_page(where_cluase: bool) -> String {
+fn select_page(filter_non_null_embeddings: bool) -> String {
     let mut result = String::from(
         r#"
         SELECT id, url, content, scraped_at, embedding
         FROM sm_scrapes
     "#,
     );
-    if where_cluase {
+    if filter_non_null_embeddings {
         result.push_str(" WHERE embedding IS NULL");
     }
     result.push_str(" ORDER BY scraped_at ASC LIMIT ? OFFSET ?");
     result
 }
 
-pub async fn get_page(conn: Connection, limit: u32, offset: u32) -> Result<Vec<ScrapeRow>, Error> {
-    let mut stmt = conn.prepare(&select_page(true)).await?;
+pub async fn get_page(
+    conn: Connection,
+    limit: u32,
+    offset: u32,
+    filter_non_null_embeddings: bool,
+) -> Result<Vec<ScrapeRow>, Error> {
+    let mut stmt = conn
+        .prepare(&select_page(filter_non_null_embeddings))
+        .await?;
     let mut rows = stmt.query((limit, offset)).await?;
     let mut scrapes = Vec::new();
 

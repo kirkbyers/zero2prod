@@ -7,7 +7,7 @@ async fn main() {
     let db = local_db(&config.database.local_file_path).await.unwrap();
     let _conn = db.connect().unwrap();
 
-    let scrapes = get_page(_conn, 10, 0).await.unwrap();
+    let scrapes = get_page(_conn, 10, 0, true).await.unwrap();
     for scrape in scrapes {
         println!("{:?}", scrape);
     }
