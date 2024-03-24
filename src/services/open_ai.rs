@@ -22,6 +22,7 @@ impl OpenAI {
         OpenAI { client, tokenizer }
     }
 
+    // TODO: OpenAI supports creating embeddings for multiple strings at once.
     pub async fn string_to_embedding(&self, input: &str) -> Result<Vec<f32>, Error> {
         let tokens = self.tokenize_string(input)?;
         let embedding_request = CreateEmbeddingRequestArgs::default()
