@@ -11,8 +11,9 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
+      - run: mkdir ./.data
       - name: Test
-        run: cargo test --verbose
+        run: cargo test
 
   fmt:
     name: Rustfmt

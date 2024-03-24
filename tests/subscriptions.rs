@@ -25,7 +25,7 @@ async fn subscribe_returns_a_200_for_valid_form_data() {
 
     assert_eq!(200, response.status().as_u16());
 
-    let db = local_db().await.unwrap();
+    let db = local_db("./.data/tests").await.unwrap();
     let conn = db.connect().unwrap();
 
     let mut rows = conn

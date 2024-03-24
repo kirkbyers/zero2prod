@@ -1,21 +1,17 @@
 use libsql::{Builder, Connection, Database, Error};
 
-use crate::configuration::get_configuration;
-
-pub async fn local_db() -> Result<Database, Error> {
-    let config = get_configuration(None).expect("Failed to read configuration.");
-    let path = config.database.local_file_path;
-    let db = Builder::new_local(path)
+pub async fn local_db(db_path: &str) -> Result<Database, Error> {
+    let db = Builder::new_local(db_path)
         .build()
         .await
         .expect("Failed to create database.");
     let conn = db.connect().expect("Failed to connect to database.");
-    init_schema(&conn).await;
+    init_schema(&conn).await.expect("Failed to initialize schema.");
 
     Ok(db)
 }
 
-async fn init_schema(conn: &Connection) {
+async fn init_schema(conn: &Connection) -> Result<(), Error>{
     conn.execute(
         r#"
         CREATE TABLE IF NOT EXISTS subscriptions (
@@ -27,19 +23,18 @@ async fn init_schema(conn: &Connection) {
         "#,
         (),
     )
-    .await
-    .unwrap();
+    .await?;
     conn.execute(
         r#"
-    CREATE TABLE IF NOT EXISTS sm_scrapes (
-        id uuid NOT NULL PRIMARY KEY,
-        url TEXT NOT NULL,
-        content TEXT NOT NULL,
-        scraped_at timestampz NOT NULL
-    );
-    "#,
+        CREATE TABLE IF NOT EXISTS sm_scrapes (
+            id uuid NOT NULL PRIMARY KEY,
+            url TEXT NOT NULL,
+            content TEXT NOT NULL,
+            scraped_at timestampz NOT NULL
+        );
+        "#,
         (),
     )
-    .await
-    .unwrap();
+    .await?;
+    Ok(())
 }

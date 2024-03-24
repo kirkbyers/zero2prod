@@ -2,11 +2,12 @@ use std::{thread::sleep, time::Duration};
 
 use chrono::Utc;
 use uuid::Uuid;
-use zero2prod::{db::local_db, services::scraper};
+use zero2prod::{db::local_db, services::scraper, configuration::get_configuration};
 
 #[tokio::main]
 async fn main() {
-    let db = local_db().await.unwrap();
+    let config = get_configuration(Some("configuration.yaml")).expect("Failed to read configuration.");
+    let db = local_db(&config.database.local_file_path).await.unwrap();
     let conn = db.connect().unwrap();
 
     let scraper = scraper::Scraper::new();

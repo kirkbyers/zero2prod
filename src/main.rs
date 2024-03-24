@@ -8,5 +8,6 @@ async fn main() -> Result<(), std::io::Error> {
         get_configuration(Some("configuration.yaml")).expect("Failed to read configuration.");
     let address = format!("127.0.0.1:{}", config.application_port);
     let listener = TcpListener::bind(address)?;
-    run(listener).await?.await
+    let db_path = config.database.local_file_path;
+    run(listener, &db_path).await?.await
 }
