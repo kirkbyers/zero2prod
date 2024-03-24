@@ -3,7 +3,7 @@ use std::io::{Error, ErrorKind::InvalidInput};
 use async_openai::{config::OpenAIConfig, types::CreateEmbeddingRequestArgs, Client};
 use tiktoken_rs::{cl100k_base, CoreBPE};
 
-struct OpenAI {
+pub struct OpenAI {
     client: Client<OpenAIConfig>,
     tokenizer: CoreBPE,
 }
