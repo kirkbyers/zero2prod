@@ -16,6 +16,10 @@ path = "src/main.rs"
 name = "sm_scraper"
 path = "src/bin/sm_scraper.rs"
 
+[[bin]]
+name = "embed_scrapes"
+path = "src/bin/embed_scrapes.rs"
+
 [dependencies]
 actix-web = "4"
 bytes = "1.5.0"

@@ -22,7 +22,7 @@ async fn main() {
     for (i, link) in links.iter().enumerate() {
         println!("Scraping link #{}: {}", i, link);
         let item_html = scraper
-            .get_url(links[0].as_str())
+            .get_url(link.as_str())
             .await
             .expect("Failed to get URL");
         let item_text = scraper.strip_html_tags(&item_html);
