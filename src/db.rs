@@ -32,7 +32,8 @@ async fn init_schema(conn: &Connection) -> Result<(), Error> {
             id uuid NOT NULL PRIMARY KEY,
             url TEXT NOT NULL,
             content TEXT NOT NULL,
-            scraped_at timestampz NOT NULL
+            scraped_at timestampz NOT NULL,
+            embedding BLOB
         );
         "#,
         (),
