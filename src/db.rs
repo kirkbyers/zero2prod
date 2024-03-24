@@ -6,12 +6,14 @@ pub async fn local_db(db_path: &str) -> Result<Database, Error> {
         .await
         .expect("Failed to create database.");
     let conn = db.connect().expect("Failed to connect to database.");
-    init_schema(&conn).await.expect("Failed to initialize schema.");
+    init_schema(&conn)
+        .await
+        .expect("Failed to initialize schema.");
 
     Ok(db)
 }
 
-async fn init_schema(conn: &Connection) -> Result<(), Error>{
+async fn init_schema(conn: &Connection) -> Result<(), Error> {
     conn.execute(
         r#"
         CREATE TABLE IF NOT EXISTS subscriptions (

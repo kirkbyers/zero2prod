@@ -12,7 +12,10 @@ pub async fn run(listener: TcpListener, db_path: &str) -> Result<Server, std::io
         Ok(db) => db,
         Err(err) => {
             eprintln!("Failed to connect to database: {:?}", err);
-            return Err(std::io::Error::new(std::io::ErrorKind::Other, "Failed to connect to database"));
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::Other,
+                "Failed to connect to database",
+            ));
         }
     };
 
@@ -20,7 +23,10 @@ pub async fn run(listener: TcpListener, db_path: &str) -> Result<Server, std::io
         Ok(connection) => connection,
         Err(err) => {
             eprintln!("Failed to connect to database: {:?}", err);
-            return Err(std::io::Error::new(std::io::ErrorKind::Other, "Failed to connect to database"));
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::Other,
+                "Failed to connect to database",
+            ));
         }
     };
     let connection_data = web::Data::new(connection);
