@@ -106,7 +106,18 @@ impl Scraper {
                     skip_ws = true;
                 }
             }
+            if copy.ends_with("You may also like ...") {
+                break;
+            }
         }
-        result.replace('\n', "")
+        result = result.replace('\n', "");
+        if let Some(index) = result.find("You may also like ...") {
+            result.truncate(index);
+        }
+        let start_trim = " 0 --          0 -- ";
+        if let Some(index) = result.find(start_trim) {
+            result = result[start_trim.len() + index..].to_string();
+        }
+        result.trim().to_string()
     }
 }
