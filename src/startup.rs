@@ -1,6 +1,6 @@
 use crate::{
     db,
-    routes::{health_check, subscribe},
+    routes::{create_green_rec, health_check, subscribe},
 };
 
 use std::net::TcpListener;
@@ -34,6 +34,7 @@ pub async fn run(listener: TcpListener, db_path: &str) -> Result<Server, std::io
         App::new()
             .route("/health_check", web::get().to(health_check))
             .route("/subscriptions", web::post().to(subscribe))
+            .route("/green_recs", web::post().to(create_green_rec))
             .app_data(connection_data.clone())
     })
     .listen(listener)?
