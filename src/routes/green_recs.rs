@@ -1,7 +1,7 @@
 use actix_web::{web, HttpResponse};
 use serde::{Deserialize, Serialize};
 
-use crate::{models::scrape, services::open_ai};
+use crate::{models::sm_scrape, services::open_ai};
 
 #[derive(Deserialize)]
 #[allow(dead_code)]
@@ -31,7 +31,7 @@ pub async fn create_green_rec(
         .string_to_embedding(&json.description)
         .await
         .unwrap();
-    let scrapes = scrape::get_page(conn.get_ref().clone(), 150, 0, false)
+    let scrapes = sm_scrape::get_page(conn.get_ref().clone(), 150, 0, false)
         .await
         .unwrap();
 
@@ -53,7 +53,7 @@ enum SimilarityOptions {
 
 fn find_closest_similarity(
     inp: Vec<f32>,
-    scrapes: Vec<scrape::ScrapeRow>,
+    scrapes: Vec<sm_scrape::SMScrapeRow>,
     similarity_option: &SimilarityOptions,
 ) -> Vec<GreenRecRes> {
     let mut result: Vec<GreenRecRes> = Vec::new();

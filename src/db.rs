@@ -1,7 +1,7 @@
 use libsql::{Builder, Connection, Database, Error};
 
 use crate::models::{
-    scrape::INIT_TABLE as SCRAPE_INIT, subscriptions::INIT_TABLE as SUBSCRIPTIONS_INIT,
+    sm_scrape::INIT_TABLE as SCRAPE_INIT, subscriptions::INIT_TABLE as SUBSCRIPTIONS_INIT,
 };
 
 pub async fn local_db(db_path: &str) -> Result<Database, Error> {

@@ -1,2 +1,2 @@
-pub mod scrape;
+pub mod sm_scrape;
 pub mod subscriptions;

@@ -1,5 +1,5 @@
 use zero2prod::{
-    configuration::get_configuration, db::local_db, models::scrape::get_page,
+    configuration::get_configuration, db::local_db, models::sm_scrape::get_page,
     services::open_ai::OpenAI,
 };
 

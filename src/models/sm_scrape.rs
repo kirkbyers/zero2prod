@@ -2,7 +2,7 @@ use chrono::DateTime;
 use libsql::{Connection, Error};
 
 #[derive(Debug)]
-pub struct ScrapeRow {
+pub struct SMScrapeRow {
     pub id: String,
     pub url: String,
     pub content: String,
@@ -24,7 +24,7 @@ pub struct ScrapeRow {
     pub spro_rec: String,
 }
 
-impl ScrapeRow {
+impl SMScrapeRow {
     pub fn new() -> Self {
         Self {
             id: String::new(),
@@ -50,7 +50,7 @@ impl ScrapeRow {
     }
 }
 
-impl Default for ScrapeRow {
+impl Default for SMScrapeRow {
     fn default() -> Self {
         Self::new()
     }
@@ -75,7 +75,7 @@ pub async fn get_page(
     limit: u32,
     offset: u32,
     filter_non_null_embeddings: bool,
-) -> Result<Vec<ScrapeRow>, Error> {
+) -> Result<Vec<SMScrapeRow>, Error> {
     let mut stmt = conn
         .prepare(&select_page(filter_non_null_embeddings))
         .await?;
@@ -99,7 +99,7 @@ pub async fn get_page(
                 .collect()
         });
 
-        let mut new_row = ScrapeRow::default();
+        let mut new_row = SMScrapeRow::default();
         new_row.id = id;
         new_row.url = url;
         new_row.content = content;
