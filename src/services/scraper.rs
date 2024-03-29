@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use reqwest::header::{
     HeaderMap, ACCEPT, ACCEPT_LANGUAGE, CONNECTION, COOKIE, DNT, HOST, UPGRADE_INSECURE_REQUESTS,
     USER_AGENT,
@@ -71,6 +73,32 @@ impl Scraper {
             }
         }
         links
+    }
+
+    pub fn sm_item_listing_to_details(&self, html: &str) -> HashMap<String, String> {
+        let document = Html::parse_document(html);
+
+        let table_selectors: HashMap<_, _> = [
+            ("region", "td[data-th='Region']"),
+            ("processing", "td[data-th='Processing']"),
+        ]
+        .iter()
+        .cloned()
+        .collect();
+
+        let table_results: HashMap<String, String> = table_selectors
+            .iter()
+            .map(|(key, selector)| {
+                let selector = Selector::parse(selector).unwrap();
+                let mut result = String::new();
+                for element in document.select(&selector) {
+                    result.push_str(&element.inner_html().trim());
+                }
+                (String::from(*key), result)
+            })
+            .collect();
+
+        table_results
     }
 
     pub fn strip_html_tags(&self, html: &str) -> String {
