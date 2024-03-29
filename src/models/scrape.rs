@@ -63,3 +63,13 @@ pub async fn get_page(
 
     Ok(scrapes)
 }
+
+pub const INIT_TABLE: &str = r#"
+CREATE TABLE IF NOT EXISTS sm_scrapes (
+    id uuid NOT NULL PRIMARY KEY,
+    url TEXT NOT NULL,
+    content TEXT NOT NULL,
+    scraped_at timestampz NOT NULL,
+    embedding BLOB
+);
+"#;

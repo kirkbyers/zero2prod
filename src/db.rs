@@ -1,5 +1,9 @@
 use libsql::{Builder, Connection, Database, Error};
 
+use crate::models::{
+    scrape::INIT_TABLE as SCRAPE_INIT, subscriptions::INIT_TABLE as SUBSCRIPTIONS_INIT,
+};
+
 pub async fn local_db(db_path: &str) -> Result<Database, Error> {
     let db = Builder::new_local(db_path)
         .build()
@@ -14,30 +18,7 @@ pub async fn local_db(db_path: &str) -> Result<Database, Error> {
 }
 
 async fn init_schema(conn: &Connection) -> Result<(), Error> {
-    conn.execute(
-        r#"
-        CREATE TABLE IF NOT EXISTS subscriptions (
-            id uuid NOT NULL PRIMARY KEY,
-            email TEXT NOT NULL UNIQUE,
-            name TEXT NOT NULL,
-            subscribed_at timestampz NOT NULL
-        );
-        "#,
-        (),
-    )
-    .await?;
-    conn.execute(
-        r#"
-        CREATE TABLE IF NOT EXISTS sm_scrapes (
-            id uuid NOT NULL PRIMARY KEY,
-            url TEXT NOT NULL,
-            content TEXT NOT NULL,
-            scraped_at timestampz NOT NULL,
-            embedding BLOB
-        );
-        "#,
-        (),
-    )
-    .await?;
+    conn.execute(SUBSCRIPTIONS_INIT, ()).await?;
+    conn.execute(SCRAPE_INIT, ()).await?;
     Ok(())
 }
