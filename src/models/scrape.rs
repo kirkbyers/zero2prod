@@ -8,6 +8,52 @@ pub struct ScrapeRow {
     pub content: String,
     pub scraped_at: chrono::DateTime<chrono::Utc>,
     pub embedding: Option<Vec<f32>>,
+    pub region: String,
+    pub processing: String,
+    pub drying: String,
+    pub arrival: String,
+    pub lot_size: String,
+    pub bag_size: String,
+    pub packaging: String,
+    pub farm_gate: String,
+    pub cultivar_detail: String,
+    pub grade: String,
+    pub appearance: String,
+    pub roast_rec: String,
+    pub coffee_type: String,
+    pub spro_rec: String,
+}
+
+impl ScrapeRow {
+    pub fn new() -> Self {
+        Self {
+            id: String::new(),
+            url: String::new(),
+            content: String::new(),
+            scraped_at: chrono::Utc::now(),
+            embedding: None,
+            region: String::new(),
+            processing: String::new(),
+            drying: String::new(),
+            arrival: String::new(),
+            lot_size: String::new(),
+            bag_size: String::new(),
+            packaging: String::new(),
+            farm_gate: String::new(),
+            cultivar_detail: String::new(),
+            grade: String::new(),
+            appearance: String::new(),
+            roast_rec: String::new(),
+            coffee_type: String::new(),
+            spro_rec: String::new(),
+        }
+    }
+}
+
+impl Default for ScrapeRow {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 fn select_page(filter_non_null_embeddings: bool) -> String {
@@ -52,13 +98,14 @@ pub async fn get_page(
                 .map(|b| f32::from_ne_bytes(b.try_into().unwrap()))
                 .collect()
         });
-        scrapes.push(ScrapeRow {
-            id,
-            url,
-            content,
-            scraped_at,
-            embedding,
-        });
+
+        let mut new_row = ScrapeRow::default();
+        new_row.id = id;
+        new_row.url = url;
+        new_row.content = content;
+        new_row.scraped_at = scraped_at;
+        new_row.embedding = embedding;
+        scrapes.push(new_row);
     }
 
     Ok(scrapes)
@@ -68,8 +115,23 @@ pub const INIT_TABLE: &str = r#"
 CREATE TABLE IF NOT EXISTS sm_scrapes (
     id uuid NOT NULL PRIMARY KEY,
     url TEXT NOT NULL,
-    content TEXT NOT NULL,
+    original TEXT,
+    content TEXT,
     scraped_at timestampz NOT NULL,
-    embedding BLOB
+    embedding BLOB,
+    region TEXT,
+    processing TEXT,
+    drying TEXT,
+    arrival TEXT,
+    lot_size TEXT,
+    bag_size TEXT,
+    packaging TEXT,
+    farm_gate TEXT,
+    cultivar_detail TEXT,
+    grade TEXT,
+    appearance TEXT,
+    roast_rec TEXT,
+    coffee_type TEXT,
+    spro_rec TEXT
 );
 "#;
