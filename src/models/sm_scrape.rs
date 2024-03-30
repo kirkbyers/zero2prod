@@ -99,7 +99,7 @@ pub async fn get_page(
                 .collect()
         });
 
-        let mut new_row = SMScrapeRow::default();
+        let mut new_row = SMScrapeRow::new();
         new_row.id = id;
         new_row.url = url;
         new_row.content = content;

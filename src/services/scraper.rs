@@ -81,6 +81,18 @@ impl Scraper {
         let table_selectors: HashMap<_, _> = [
             ("region", "td[data-th='Region']"),
             ("processing", "td[data-th='Processing']"),
+            ("drying", "td[data-th='Drying Method']"),
+            ("arrival", "td[data-th='Arrival date']"),
+            ("lot_size", "td[data-th='Lot size']"),
+            ("bag_size", "td[data-th='Bag size']"),
+            ("packaging", "td[data-th='Packaging']"),
+            ("farm_gate", "td[data-th='Farm Gate']"),
+            ("cultivar_detail", "td[data-th='Cultivar Detail']"),
+            ("grade", "td[data-th='Grade']"),
+            ("appearance", "td[data-th='Appearance']"),
+            ("roast_rec", "td[data-th='Roast Recommendations']"),
+            ("coffee_type", "td[data-th='Type']"),
+            ("spro_rec", "td[data-th='Recommended for Espresso']"),
         ]
         .iter()
         .cloned()
@@ -92,7 +104,7 @@ impl Scraper {
                 let selector = Selector::parse(selector).unwrap();
                 let mut result = String::new();
                 for element in document.select(&selector) {
-                    result.push_str(&element.inner_html().trim());
+                    result.push_str(element.inner_html().trim());
                 }
                 (String::from(*key), result)
             })
