@@ -16,7 +16,7 @@ async fn subscribe_returns_a_200_for_valid_form_data() {
     }"#;
 
     let response = client
-        .post(&format!("{}/subscriptions", &address))
+        .post(&format!("{}/api/subscriptions", &address))
         .header("Content-Type", "application/json")
         .body(body)
         .send()
@@ -71,7 +71,7 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
 
     for (invalid_body, _error_message) in test_cases {
         let response = client
-            .post(&format!("{}/subscriptions", &address))
+            .post(&format!("{}/api/subscriptions", &address))
             .header("Content-Type", "application/json")
             .body(invalid_body)
             .send()
