@@ -20,7 +20,7 @@ pub struct GreenRecQuery {
     similarity: Option<SimilarityOptions>,
 }
 
-#[post("/api/green_recs")]
+#[post("/green_recs")]
 pub async fn create_green_rec(
     query: web::Query<GreenRecQuery>,
     json: web::Json<GreenRecData>,

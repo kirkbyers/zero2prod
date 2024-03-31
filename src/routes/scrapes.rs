@@ -26,7 +26,7 @@ enum SortDirection {
     Desc,
 }
 
-#[get("/api/scrapes")]
+#[get("/scrapes")]
 async fn get_scrapes(
     query: web::Query<QueryParams>,
     conn: web::Data<libsql::Connection>,

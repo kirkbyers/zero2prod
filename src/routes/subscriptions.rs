@@ -15,7 +15,7 @@ const INSERT_QUERY: &str = r#"
     VALUES (?1, ?2, ?3, ?4);
 "#;
 
-#[post("/api/subscriptions")]
+#[post("/subscriptions")]
 pub async fn subscribe(
     json: web::Json<SubscriberData>,
     connection: web::Data<libsql::Connection>,

@@ -32,10 +32,13 @@ pub async fn run(listener: TcpListener, db_path: &str) -> Result<Server, std::io
     let connection_data = web::Data::new(connection);
     let app = HttpServer::new(move || {
         App::new()
-            .service(health_check_route)
-            .service(subscribe)
-            .service(create_green_rec)
-            .service(get_scrapes)
+            .service(
+                web::scope("/api")
+                    .service(health_check_route)
+                    .service(subscribe)
+                    .service(create_green_rec)
+                    .service(get_scrapes),
+            )
             .app_data(connection_data.clone())
     })
     .listen(listener)?
