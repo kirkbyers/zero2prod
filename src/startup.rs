@@ -1,11 +1,9 @@
 use crate::{
     db,
-    routes::{create_green_rec, get_scrapes, health_check_route, subscribe},
+    routes::{create_green_rec, get_scrapes, health_check_route, home, subscribe},
 };
-
-use std::net::TcpListener;
-
 use actix_web::{dev::Server, web, App, HttpServer};
+use std::net::TcpListener;
 
 pub async fn run(listener: TcpListener, db_path: &str) -> Result<Server, std::io::Error> {
     let db = match db::local_db(db_path).await {
@@ -30,6 +28,7 @@ pub async fn run(listener: TcpListener, db_path: &str) -> Result<Server, std::io
         }
     };
     let connection_data = web::Data::new(connection);
+
     let app = HttpServer::new(move || {
         App::new()
             .service(
@@ -39,6 +38,7 @@ pub async fn run(listener: TcpListener, db_path: &str) -> Result<Server, std::io
                     .service(create_green_rec)
                     .service(get_scrapes),
             )
+            .service(home)
             .app_data(connection_data.clone())
     })
     .listen(listener)?
