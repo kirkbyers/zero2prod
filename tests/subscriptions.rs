@@ -12,7 +12,7 @@ async fn subscribe_returns_a_200_for_valid_form_data() {
     let body = r#"
     {
         "name": "leeroy",
-        "email": "some@email.co"
+        "email": "some2@email.co"
     }"#;
 
     let response = client
@@ -41,7 +41,7 @@ async fn subscribe_returns_a_200_for_valid_form_data() {
     let email = email_value.as_text().expect("Failed to get email text");
     let name_value = row.get_value(1).expect("Failed to get name");
     let name = name_value.as_text().expect("Failed to get name text");
-    assert_eq!(email, "some@email.co");
+    assert_eq!(email, "some2@email.co");
     assert_eq!(name, "leeroy");
 }
 
