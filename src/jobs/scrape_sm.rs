@@ -1,8 +1,8 @@
 use std::{thread::sleep, time::Duration};
 
+use crate::{configuration::get_configuration, db::local_db, services::scraper};
 use chrono::Utc;
 use uuid::Uuid;
-use crate::{configuration::get_configuration, db::local_db, services::scraper};
 
 macro_rules! unwrap_table_data {
     ($table_data:expr, $key:expr) => {

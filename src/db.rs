@@ -1,9 +1,8 @@
 use libsql::{Builder, Connection, Database, Error};
 
 use crate::models::{
-    sm_scrape::INIT_TABLE as SCRAPE_INIT, 
+    jobs::INIT_TABLE as JOBS_INIT, sm_scrape::INIT_TABLE as SCRAPE_INIT,
     subscriptions::INIT_TABLE as SUBSCRIPTIONS_INIT,
-    jobs::INIT_TABLE as JOBS_INIT,
 };
 
 pub async fn local_db(db_path: &str) -> Result<Database, Error> {

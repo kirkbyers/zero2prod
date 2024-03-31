@@ -1,6 +1,8 @@
 use crate::{
     db,
-    routes::{create_green_rec, get_scrapes, health_check_route, home, subscribe},
+    routes::{
+        create_green_rec, get_jobs, get_scrapes, health_check_route, home, start_job, subscribe,
+    },
 };
 use actix_web::{dev::Server, web, App, HttpServer};
 use std::net::TcpListener;
@@ -36,7 +38,8 @@ pub async fn run(listener: TcpListener, db_path: &str) -> Result<Server, std::io
                     .service(health_check_route)
                     .service(subscribe)
                     .service(create_green_rec)
-                    .service(get_scrapes),
+                    .service(get_scrapes)
+                    .service(web::scope("/jobs").service(get_jobs).service(start_job)),
             )
             .service(home)
             .app_data(connection_data.clone())

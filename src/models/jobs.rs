@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize)]
 enum JobType {
     SMScrape,
-    Embed
+    Embed,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -11,7 +11,7 @@ enum JobStatus {
     Pending,
     Running,
     Completed,
-    Failed
+    Failed,
 }
 
 pub const INIT_TABLE: &str = r#"
