@@ -1,6 +1,8 @@
 use chrono::DateTime;
 use libsql::{Connection, Error};
 
+use crate::models::utils::create_paginator;
+
 #[derive(Debug)]
 pub struct SMScrapeRow {
     pub id: String,
@@ -64,34 +66,7 @@ pub fn select_with_pagination(
     limit: u32,
     offset: u32,
 ) -> String {
-    let mut result = String::from("SELECT ");
-    result.push_str(columns);
-
-    result.push_str(" FROM sm_scrapes");
-
-    if !q.is_empty() {
-        result.push_str(format!(" WHERE {}", q).as_str());
-    }
-
-    if !sort_by.is_empty() {
-        result.push_str(format!(" ORDER BY {}", sort_by).as_str());
-        if !sort_direction.is_empty() {
-            result.push_str(format!(" {}", sort_direction).as_str());
-        } else {
-            result.push_str(" ASC");
-        }
-    }
-
-    if limit > 0 {
-        result.push_str(format!(" LIMIT {}", limit).as_str());
-    }
-
-    if offset > 0 {
-        result.push_str(format!(" OFFSET {}", offset.to_string().as_str()).as_str());
-    }
-
-    result.push(';');
-    result
+    create_paginator("sm_scrapes")(columns, q, sort_by, sort_direction, limit, offset)
 }
 
 fn select_page(filter_non_null_embeddings: bool) -> String {
