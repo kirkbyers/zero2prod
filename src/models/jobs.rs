@@ -1,3 +1,4 @@
+use crate::models::utils::create_paginator;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
@@ -12,6 +13,17 @@ enum JobStatus {
     Running,
     Completed,
     Failed,
+}
+
+pub fn select_with_pagination(
+    columns: &str,
+    q: &str,
+    sort_by: &str,
+    sort_direction: &str,
+    limit: u32,
+    offset: u32,
+) -> String {
+    create_paginator("jobs")(columns, q, sort_by, sort_direction, limit, offset)
 }
 
 pub const INIT_TABLE: &str = r#"
