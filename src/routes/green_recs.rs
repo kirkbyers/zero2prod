@@ -4,7 +4,6 @@ use serde::{Deserialize, Serialize};
 use crate::{models::sm_scrape, services::open_ai};
 
 #[derive(Deserialize)]
-#[allow(dead_code)]
 pub struct GreenRecData {
     description: String,
 }
