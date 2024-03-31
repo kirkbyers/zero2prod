@@ -1,4 +1,4 @@
-use actix_web::{web, HttpResponse};
+use actix_web::{post, web, HttpResponse};
 use chrono::Utc;
 use serde::Deserialize;
 use uuid::Uuid;
@@ -15,6 +15,7 @@ const INSERT_QUERY: &str = r#"
     VALUES (?1, ?2, ?3, ?4);
 "#;
 
+#[post("/api/subscriptions")]
 pub async fn subscribe(
     json: web::Json<SubscriberData>,
     connection: web::Data<libsql::Connection>,

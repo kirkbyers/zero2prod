@@ -1,4 +1,4 @@
-use actix_web::{web, HttpResponse};
+use actix_web::{post, web, HttpResponse};
 use serde::{Deserialize, Serialize};
 
 use crate::{models::sm_scrape, services::open_ai};
@@ -20,6 +20,7 @@ pub struct GreenRecQuery {
     similarity: Option<SimilarityOptions>,
 }
 
+#[post("/api/green_recs")]
 pub async fn create_green_rec(
     query: web::Query<GreenRecQuery>,
     json: web::Json<GreenRecData>,
