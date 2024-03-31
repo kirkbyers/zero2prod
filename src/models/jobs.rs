@@ -21,6 +21,6 @@ CREATE TABLE IF NOT EXISTS jobs (
     status INTEGER NOT NULL,
     created_at timestampz NOT NULL,
     updated_at timestampz NOT NULL,
-    completed_at timestampz,
+    completed_at timestampz
 );
 "#;
