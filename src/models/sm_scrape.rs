@@ -132,6 +132,7 @@ CREATE TABLE IF NOT EXISTS sm_scrapes (
     appearance TEXT,
     roast_rec TEXT,
     coffee_type TEXT,
-    spro_rec TEXT
+    spro_rec TEXT,
+    score REAL
 );
 "#;

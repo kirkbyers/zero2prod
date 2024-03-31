@@ -93,6 +93,7 @@ impl Scraper {
             ("roast_rec", "td[data-th='Roast Recommendations']"),
             ("coffee_type", "td[data-th='Type']"),
             ("spro_rec", "td[data-th='Recommended for Espresso']"),
+            ("score", "div.score-value"),
         ]
         .iter()
         .cloned()

@@ -51,6 +51,7 @@ async fn main() {
         let roast_rec: String = unwrap_table_data!(table_data, "roast_rec");
         let coffee_type: String = unwrap_table_data!(table_data, "coffee_type");
         let spro_rec: String = unwrap_table_data!(table_data, "spro_rec");
+        let score: String = unwrap_table_data!(table_data, "score");
 
         // Save the scraped item to the database
         let mut stmt = conn
@@ -78,13 +79,14 @@ async fn main() {
                 roast_rec,
                 coffee_type,
                 spro_rec,
+                score,
             ])
             .await
         {
             Ok(_) => println!("Scraped and saved item #{}", i),
             Err(e) => eprintln!("Failed to execute query: {:?}", e),
         }
-        sleep(Duration::from_secs(7));
+        sleep(Duration::from_secs(2));
     }
 }
 
@@ -108,7 +110,8 @@ const INSERT_QUERY: &str = r#"
         appearance,
         roast_rec,
         coffee_type,
-        spro_rec
+        spro_rec,
+        score
     )
-    VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18, ?19);
+    VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18, ?19, ?20);
 "#;
