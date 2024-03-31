@@ -1,7 +1,9 @@
 use libsql::{Builder, Connection, Database, Error};
 
 use crate::models::{
-    sm_scrape::INIT_TABLE as SCRAPE_INIT, subscriptions::INIT_TABLE as SUBSCRIPTIONS_INIT,
+    sm_scrape::INIT_TABLE as SCRAPE_INIT, 
+    subscriptions::INIT_TABLE as SUBSCRIPTIONS_INIT,
+    jobs::INIT_TABLE as JOBS_INIT,
 };
 
 pub async fn local_db(db_path: &str) -> Result<Database, Error> {
@@ -23,5 +25,6 @@ pub async fn local_db(db_path: &str) -> Result<Database, Error> {
 async fn init_schema(conn: &Connection) -> Result<(), Error> {
     conn.execute(SUBSCRIPTIONS_INIT, ()).await?;
     conn.execute(SCRAPE_INIT, ()).await?;
+    conn.execute(JOBS_INIT, ()).await?;
     Ok(())
 }
