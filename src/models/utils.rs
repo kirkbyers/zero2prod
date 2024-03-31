@@ -1,6 +1,11 @@
 pub fn create_paginator(table_name: &str) -> impl Fn(&str, &str, &str, &str, u32, u32) -> String {
     let table_name = table_name.to_string(); // Clone table_name
-    let paginate = move |columns: &str, q: &str, sort_by: &str, sort_direction: &str, limit: u32, offset: u32| {
+    let paginate = move |columns: &str,
+                         q: &str,
+                         sort_by: &str,
+                         sort_direction: &str,
+                         limit: u32,
+                         offset: u32| {
         let mut result = String::from("SELECT ");
         result.push_str(columns);
 
