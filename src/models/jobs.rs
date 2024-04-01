@@ -16,7 +16,7 @@ impl JobType {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, PartialEq, Copy, Clone)]
 pub enum JobStatus {
     Pending,
     Running,
@@ -40,11 +40,18 @@ pub fn create_job(job_type: JobType, job_status: JobStatus) -> String {
 
 pub fn update_row(id: &str, job_status: JobStatus) -> String {
     let now = chrono::Utc::now();
+    let mut result = format!(
+        "UPDATE jobs SET job_status = {}, updated_at = '{}' ",
+        job_status as i32, now,
+    );
 
-    format!(
-        "UPDATE jobs SET job_status = {}, updated_at = '{}' WHERE id = '{}';",
-        job_status as i32, now, id,
-    )
+    if job_status == JobStatus::Completed {
+        result = format!("{}, completed_at = '{}' ", result, now);
+    }
+
+    result = format!("{} WHERE id = '{}';", result, id);
+
+    result
 }
 
 pub fn select_with_pagination(

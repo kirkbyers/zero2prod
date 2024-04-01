@@ -1,4 +1,8 @@
-use crate::{db, jobs::scrape_sm::main as run_scrape_sm, models::jobs};
+use crate::{
+    db,
+    jobs::{embed_scrapes::main as run_embed_scrapes, scrape_sm::main as run_scrape_sm},
+    models::jobs,
+};
 
 pub async fn process_job(db_path: &str) -> Result<(), std::io::Error> {
     let db = match db::local_db(db_path).await {
@@ -63,19 +67,22 @@ pub async fn process_job(db_path: &str) -> Result<(), std::io::Error> {
 
     match pending_job_type {
         i if i == jobs::JobType::SMScrape.as_i32() => {
+            eprintln!("SMScrape job running");
             run_scrape_sm().await;
         }
         i if i == jobs::JobType::Embed.as_i32() => {
-            let complete_query = jobs::update_row(&pending_id, jobs::JobStatus::Completed);
-            conn.execute(&complete_query, ())
-                .await
-                .expect("Failed to update job status");
+            eprintln!("Embed job running");
+            run_embed_scrapes().await;
         }
         _ => {
             eprintln!("Unknown job type");
             return Ok(());
         }
     }
+    let complete_query = jobs::update_row(&pending_id, jobs::JobStatus::Completed);
+    conn.execute(&complete_query, ())
+        .await
+        .expect("Failed to update job status");
 
     Ok(())
 }
