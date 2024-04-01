@@ -3,8 +3,17 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 pub enum JobType {
-    SMScrape,
-    Embed,
+    SMScrape = 0,
+    Embed = 1,
+}
+
+impl JobType {
+    pub fn as_i32(&self) -> i32 {
+        match self {
+            JobType::SMScrape => 0,
+            JobType::Embed => 1,
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize)]
@@ -26,6 +35,15 @@ pub fn create_job(job_type: JobType, job_status: JobStatus) -> String {
         job_status as i32,
         now,
         now,
+    )
+}
+
+pub fn update_row(id: &str, job_status: JobStatus) -> String {
+    let now = chrono::Utc::now();
+
+    format!(
+        "UPDATE jobs SET job_status = {}, updated_at = '{}' WHERE id = '{}';",
+        job_status as i32, now, id,
     )
 }
 
