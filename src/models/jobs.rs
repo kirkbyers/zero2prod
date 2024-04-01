@@ -1,7 +1,7 @@
 use crate::models::utils::create_paginator;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Copy, Clone)]
 pub enum JobType {
     SMScrape = 0,
     Embed = 1,

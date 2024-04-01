@@ -37,8 +37,8 @@ pub async fn process_job(db_path: &str) -> Result<(), std::io::Error> {
         .expect("Failed to get pending job")
         .next()
         .await;
-    let mut pending_id: String = String::new();
-    let mut pending_job_type: i32 = 0;
+    let pending_id: String;
+    let pending_job_type: i32;
     match pending_row {
         Ok(Some(row)) => {
             pending_id = row.get::<String>(0).unwrap();

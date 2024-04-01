@@ -1,7 +1,7 @@
 use crate::models::jobs;
 use actix_web::{get, post, web, HttpResponse};
 use libsql::Rows;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 // GET /jobs
 #[get("")]
@@ -23,10 +23,18 @@ pub async fn get_jobs(conn: web::Data<libsql::Connection>) -> HttpResponse {
     HttpResponse::Ok().json(response)
 }
 
+#[derive(Deserialize)]
+struct JobRequest {
+    job_type: Option<jobs::JobType>,
+}
+
 // POST /jobs
 // Start a job. If there is a pending job, return a 409 Conflict.
 #[post("")]
-pub async fn start_job(conn: web::Data<libsql::Connection>) -> HttpResponse {
+pub async fn start_job(
+    conn: web::Data<libsql::Connection>,
+    json: web::Json<JobRequest>,
+) -> HttpResponse {
     let query = jobs::select_with_pagination(
         "id",
         &format!("job_status = {}", jobs::JobStatus::Pending as i32),
@@ -48,7 +56,12 @@ pub async fn start_job(conn: web::Data<libsql::Connection>) -> HttpResponse {
         Err(e) => return HttpResponse::InternalServerError().body(e.to_string()),
     }
 
-    let create_query = jobs::create_job(jobs::JobType::SMScrape, jobs::JobStatus::Pending);
+    let job_type = match json.job_type {
+        Some(job_type) => job_type,
+        None => jobs::JobType::SMScrape,
+    };
+
+    let create_query = jobs::create_job(job_type, jobs::JobStatus::Pending);
     match conn.get_ref().execute(&create_query, ()).await {
         Ok(_) => (),
         Err(e) => return HttpResponse::InternalServerError().body(e.to_string()),

@@ -17,7 +17,7 @@ async fn main() -> Result<(), std::io::Error> {
             process_job(&db_path_clone)
                 .await
                 .expect("Failed to process job");
-            tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+            tokio::time::sleep(std::time::Duration::from_secs(30)).await;
         }
     });
 
