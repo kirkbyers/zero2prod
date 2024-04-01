@@ -1,5 +1,5 @@
 watch:
-	cargo watch -x check -x test -x run
+	cargo watch -x "run --bin zero2prod"
 
 lint:
 	cargo clippy

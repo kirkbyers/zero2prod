@@ -71,14 +71,14 @@ async fn get_scrapes(
     HttpResponse::Ok().json(response)
 }
 
-#[derive(Serialize)]
-struct Response {
-    scrapes: Vec<Scrape>,
-    total: u32,
+#[derive(Serialize, Debug)]
+pub struct Response {
+    pub scrapes: Vec<Scrape>,
+    pub total: u32,
 }
 
-#[derive(Serialize, Clone)]
-struct Scrape {
+#[derive(Serialize, Clone, Debug)]
+pub struct Scrape {
     id: String,
     url: String,
     arrival: String,
@@ -106,7 +106,7 @@ macro_rules! real_row_to_string {
     };
 }
 
-async fn rows_to_response(mut rows: Rows) -> Response {
+pub async fn rows_to_response(mut rows: Rows) -> Response {
     let mut scrapes = Vec::new();
     while let Ok(Some(row)) = rows.next().await {
         let scrape = Scrape {

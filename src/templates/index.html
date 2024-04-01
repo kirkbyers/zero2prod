@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Centered Table</title>
+  <title>Sweet Maria's Data Explorer</title>
   <link href="https://cdn.jsdelivr.net/npm/daisyui@4.9.0/dist/full.min.css" rel="stylesheet" type="text/css" />
   <style>
     .center-screen {
@@ -15,24 +15,41 @@
   </style>
 </head>
 <body class="center-screen">
-  <table class="table-auto">
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Example 1</td>
-        <td>This is an example</td>
-      </tr>
-      <tr>
-        <td>Example 2</td>
-        <td>This is another example</td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="px-4 py2 overflow-x-auto max-h-full">
+    <table class="table table-auto">
+      <thead>
+        <tr>
+          <th>Score</th>
+          <th>URL</th>
+          <th>Arrival</th>
+          <th>Lot Size</th>
+          <th>Bag Size</th>
+          <th>Packaging</th>
+          <th>Cultivar Details</th>
+          <th>Spro Rec</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for scrape in scrapes %}
+          <tr>
+            <td>{{ scrape.score }}</td>
+            <td><a href="{{ scrape.url }}" target="_blank">{{ scrape.url }}</a></td>
+            <td>{{ scrape.arrival }}</td>
+            <td>{{ scrape.lot_size }}</td>
+            <td>{{ scrape.bag_size }}</td>
+            <td>{{ scrape.packaging }}</td>
+            <td>{{ scrape.cultivar_detail }}</td>
+            <td>{{ scrape.spro_rec }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+      window.scrapes = {{ scrapes | json_encode() | safe  }};
+    });
+  </script>
 </body>
 </html>
