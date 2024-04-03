@@ -65,7 +65,20 @@
           const sortColumn = th.getAttribute("data-sort");
           th.append(sort.startsWith('-') ? ascSpan : descSpan);
           direction = sort.startsWith('-') ? -1 : 1;
+
           window.scrapes.sort((a, b) => {
+            if (a[sortColumn] === 'n/a' && b[sortColumn] !== 'n/a') {
+              return 1;
+            }
+            if (a[sortColumn] !== 'n/a' && b[sortColumn] === 'n/a') {
+              return -1;
+            }
+            if (!a[sortColumn] && b[sortColumn]) {
+              return 1;
+            }
+            if (a[sortColumn] && !b[sortColumn]) {
+              return -1;
+            }
             if (a[sortColumn] < b[sortColumn]) {
               return direction;
             }
@@ -74,6 +87,7 @@
             }
             return 0;
           });
+
           tableBody.innerHTML = '';
           tableBody.append(...scrapesToTableRows(window.scrapes));
         });
