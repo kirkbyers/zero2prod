@@ -63,7 +63,10 @@ fn find_closest_similarity(
         SimilarityOptions::Manhattan => manhattan_distance,
     };
     for scrape in scrapes {
-        let similarity = similarity_fn(&inp, &scrape.embedding.clone().unwrap());
+        let similarity = similarity_fn(&inp, match &scrape.embedding.clone() {
+            Some(embedding) => embedding,
+            None => continue,
+        });
         result.push(GreenRecRes {
             id: scrape.id,
             url: scrape.url,

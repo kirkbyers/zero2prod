@@ -16,8 +16,21 @@
 </head>
 <body class="center-screen">
   <div class="px-4 py2 overflow-x-auto max-h-full">
+    <div class="sticky top-0 bg-base-100 z-10 pt-[16px]">
+      <form>
+        <label class="form-control w-full">
+          <input id="description" name="description" type="text" placeholder="Search by Coffee Description" class="input input-bordered w-full" />
+          <div class="label">
+            <span class="label-text-alt">Cupping notes and descriptions in the style of Sweet Marias works best</span>
+            <span class="label-text-alt">
+              <button type="submit" class="btn btn-neutral btn-sm">Go</button>
+            </span>
+          </div>
+        </label>
+      </form>
+    </div>
     <table class="table table-auto">
-      <thead class="sticky top-0 bg-base-100">
+      <thead class="sticky top-[112px] bg-base-100">
         <tr class="">
           <th data-sort="score" class="cursor-pointer">Score</th>
           <th data-sort="url" class="cursor-pointer">URL</th>
@@ -36,6 +49,10 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     const tableBody = document.querySelector("tbody");
+    const form = document.querySelector('form');
+    const formSubmit = document.querySelector('button[type="submit"]');
+    const loadingSpan = document.createElement("span");
+    loadingSpan.className = "loading loading-spinner";
     const spanClass = "px-[4px]";
     const ascSpan = document.createElement("span");
     ascSpan.innerHTML = "🔼";
@@ -92,11 +109,50 @@
           tableBody.append(...scrapesToTableRows(window.scrapes));
         });
       });
+
+      form.addEventListener('submit', (event) => {
+        formSubmit.innerHTML = '';
+        formSubmit.append(loadingSpan.cloneNode(true));
+        const selectedRows = tableBody.querySelectorAll("tr.bg-green-200");
+        selectedRows.forEach(row => {
+          row.className = row.className.replace("bg-green-200", "");
+        });
+        event.preventDefault();
+        const description = form.elements.description.value;
+        fetch('/api/green_recs', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ description }),
+        })
+        .then(response => response.json())
+        .then(data => {
+          // window.scrapes = data;
+          if (data.length === 0) {
+            return;
+          }
+          const firstRow = tableBody.querySelector(`tr[data-id="${data[0].id}"]`);
+          firstRow.className = `${firstRow.className} bg-green-200`;
+          if (firstRow) {
+            firstRow.scrollIntoView();
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        })
+        .finally(() => {
+          formSubmit.innerHTML = 'Go';
+        });
+      });
+      
+      
     });
 
     const scrapesToTableRows = (scrapes) => {
       return scrapes.map(scrape => {
         const row = document.createElement("tr");
+        row.setAttribute("data-id", scrape.id);
         row.innerHTML = `
           <td>${scrape.score}</td>
           <td><a href="${scrape.url}" target="_blank">${scrape.url}</a></td>
