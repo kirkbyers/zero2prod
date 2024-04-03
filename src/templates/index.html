@@ -17,39 +17,85 @@
 <body class="center-screen">
   <div class="px-4 py2 overflow-x-auto max-h-full">
     <table class="table table-auto">
-      <thead>
-        <tr>
-          <th>Score</th>
-          <th>URL</th>
-          <th>Arrival</th>
-          <th>Lot Size</th>
-          <th>Bag Size</th>
-          <th>Packaging</th>
-          <th>Cultivar Details</th>
-          <th>Spro Rec</th>
+      <thead class="sticky top-0 bg-base-100">
+        <tr class="">
+          <th data-sort="score" class="cursor-pointer">Score</th>
+          <th data-sort="url" class="cursor-pointer">URL</th>
+          <th data-sort="arrival" class="cursor-pointer">Arrival</th>
+          <th data-sort="lot_size" class="cursor-pointer">Lot Size</th>
+          <th data-sort="bag_size" class="cursor-pointer">Bag Size</th>
+          <th data-sort="packaging" class="cursor-pointer">Packaging</th>
+          <th data-sort="cultivar_detail" class="cursor-pointer">Cultivar Details</th>
+          <th data-sort="spro_rec" class="cursor-pointer">Spro Rec</th>
         </tr>
       </thead>
-      <tbody>
-        {% for scrape in scrapes %}
-          <tr>
-            <td>{{ scrape.score }}</td>
-            <td><a href="{{ scrape.url }}" target="_blank">{{ scrape.url }}</a></td>
-            <td>{{ scrape.arrival }}</td>
-            <td>{{ scrape.lot_size }}</td>
-            <td>{{ scrape.bag_size }}</td>
-            <td>{{ scrape.packaging }}</td>
-            <td>{{ scrape.cultivar_detail }}</td>
-            <td>{{ scrape.spro_rec }}</td>
-          </tr>
-        {% endfor %}
+      <tbody class="">
       </tbody>
     </table>
   </div>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
+    const tableBody = document.querySelector("tbody");
+    const spanClass = "px-[4px]";
+    const ascSpan = document.createElement("span");
+    ascSpan.innerHTML = "🔼";
+    ascSpan.setAttribute("data-direction", "asc");
+    ascSpan.className = spanClass;
+    const descSpan = document.createElement("span");
+    descSpan.innerHTML = "🔽";
+    descSpan.setAttribute("data-direction", "desc");
+    descSpan.className = spanClass;
+
+    let sort = '';
     document.addEventListener('DOMContentLoaded', (event) => {
       window.scrapes = {{ scrapes | json_encode() | safe  }};
+      tableBody.innerHTML = '';
+      tableBody.append(...scrapesToTableRows(window.scrapes));
+
+      document.querySelectorAll("th").forEach(th => {
+        th.addEventListener("click", (el) => {
+          document.querySelectorAll("th[data-sorted]").forEach(th => {
+            th.removeAttribute("data-sorted");
+          });
+          document.querySelectorAll("th span").forEach(span => {
+            span.remove();
+          });
+          sort = th.getAttribute("data-sort") === sort ? `-${sort}` : th.getAttribute("data-sort");
+          th.setAttribute("data-sorted", sort);
+          const sortColumn = th.getAttribute("data-sort");
+          th.append(sort.startsWith('-') ? ascSpan : descSpan);
+          direction = sort.startsWith('-') ? -1 : 1;
+          window.scrapes.sort((a, b) => {
+            if (a[sortColumn] < b[sortColumn]) {
+              return direction;
+            }
+            if (a[sortColumn] > b[sortColumn]) {
+              return direction * -1;
+            }
+            return 0;
+          });
+          tableBody.innerHTML = '';
+          tableBody.append(...scrapesToTableRows(window.scrapes));
+        });
+      });
     });
+
+    const scrapesToTableRows = (scrapes) => {
+      return scrapes.map(scrape => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${scrape.score}</td>
+          <td><a href="${scrape.url}" target="_blank">${scrape.url}</a></td>
+          <td>${scrape.arrival}</td>
+          <td>${scrape.lot_size}</td>
+          <td>${scrape.bag_size}</td>
+          <td>${scrape.packaging}</td>
+          <td>${scrape.cultivar_detail}</td>
+          <td>${scrape.spro_rec}</td>
+        `;
+        return row;
+      });
+    };
   </script>
 </body>
 </html>
