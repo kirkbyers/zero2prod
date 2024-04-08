@@ -1,12 +1,7 @@
-use crate::{
-    configuration::get_configuration, db::local_db, models::sm_scrape::get_page,
-    services::open_ai::OpenAI,
-};
+use crate::{db::start_db, models::sm_scrape::get_page, services::open_ai::OpenAI};
 
 pub async fn main() {
-    let config =
-        get_configuration(Some("configuration.yaml")).expect("Failed to read configuration.");
-    let db = local_db(&config.database.local_file_path).await.unwrap();
+    let db = start_db().await.unwrap();
     let conn = db.connect().unwrap();
 
     let open_ai = OpenAI::new();

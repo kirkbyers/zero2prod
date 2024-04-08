@@ -7,8 +7,8 @@ use crate::{
 use actix_web::{dev::Server, web, App, HttpServer};
 use std::net::TcpListener;
 
-pub async fn run(listener: TcpListener, db_path: &str) -> Result<Server, std::io::Error> {
-    let db = match db::local_db(db_path).await {
+pub async fn run(listener: TcpListener) -> Result<Server, std::io::Error> {
+    let db = match db::start_db().await {
         Ok(db) => db,
         Err(err) => {
             eprintln!("Failed to connect to database: {:?}", err);

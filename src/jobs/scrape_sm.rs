@@ -1,6 +1,6 @@
 use std::{thread::sleep, time::Duration};
 
-use crate::{configuration::get_configuration, db::local_db, services::scraper};
+use crate::{db::start_db, services::scraper};
 use chrono::Utc;
 use uuid::Uuid;
 
@@ -11,9 +11,7 @@ macro_rules! unwrap_table_data {
 }
 
 pub async fn main() {
-    let config =
-        get_configuration(Some("configuration.yaml")).expect("Failed to read configuration.");
-    let db = local_db(&config.database.local_file_path).await.unwrap();
+    let db = start_db().await.unwrap();
     let conn = db.connect().unwrap();
 
     let scraper = scraper::Scraper::new();

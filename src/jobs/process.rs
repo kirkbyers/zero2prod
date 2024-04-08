@@ -4,8 +4,8 @@ use crate::{
     models::jobs,
 };
 
-pub async fn process_job(db_path: &str) -> Result<(), std::io::Error> {
-    let db = match db::local_db(db_path).await {
+pub async fn process_job() -> Result<(), std::io::Error> {
+    let db = match db::start_db().await {
         Ok(db) => db,
         Err(err) => {
             eprintln!("Failed to connect to database: {:?}", err);

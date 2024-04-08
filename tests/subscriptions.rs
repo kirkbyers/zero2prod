@@ -1,7 +1,9 @@
 mod common;
 
+use std::env;
+
 use common::spawn_app;
-use zero2prod::db::local_db;
+use zero2prod::db::start_db;
 
 #[tokio::test]
 async fn subscribe_returns_a_200_for_valid_form_data() {
@@ -25,7 +27,8 @@ async fn subscribe_returns_a_200_for_valid_form_data() {
 
     assert_eq!(200, response.status().as_u16());
 
-    let db = local_db("./.data/tests.db").await.unwrap();
+    env::set_var("DB_FILE_PATH", "./.data/tests.db");
+    let db = start_db().await.unwrap();
     let conn = db.connect().unwrap();
 
     let mut rows = conn

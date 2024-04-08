@@ -9,17 +9,13 @@ async fn main() -> Result<(), std::io::Error> {
         get_configuration(Some("configuration.yaml")).expect("Failed to read configuration.");
     let address = format!("0.0.0.0:{}", config.application_port);
     let listener = TcpListener::bind(address)?;
-    let db_path = config.database.local_file_path;
-    let db_path_clone = db_path.clone();
 
     rt::spawn(async move {
         loop {
-            process_job(&db_path_clone)
-                .await
-                .expect("Failed to process job");
+            process_job().await.expect("Failed to process job");
             tokio::time::sleep(std::time::Duration::from_secs(30)).await;
         }
     });
 
-    run(listener, &db_path).await?.await
+    run(listener).await?.await
 }
