@@ -1,4 +1,5 @@
 use actix_web::rt;
+use dotenvy::dotenv;
 use std::net::TcpListener;
 
 use zero2prod::{configuration::get_configuration, jobs::process::process_job, startup::run};
@@ -7,6 +8,7 @@ use zero2prod::{configuration::get_configuration, jobs::process::process_job, st
 async fn main() -> Result<(), std::io::Error> {
     let config =
         get_configuration(Some("configuration.yaml")).expect("Failed to read configuration.");
+    dotenv().expect("No .env file found");
     let address = format!("0.0.0.0:{}", config.application_port);
     let listener = TcpListener::bind(address)?;
 

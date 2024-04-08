@@ -1,4 +1,4 @@
-use std::env;
+use std::{env, time::Duration};
 
 use libsql::{Builder, Connection, Database, Error};
 
@@ -20,6 +20,11 @@ pub async fn start_db() -> Result<Database, Error> {
             )))
         }
     };
+
+    let db_path_parts: Vec<&str> = db_file_path.split('/').collect();
+    let new_db_path = db_path_parts[..db_path_parts.len() - 1].join("/");
+    std::fs::create_dir_all(new_db_path).expect("Failed to create database directory.");
+
     if db_url.is_empty() {
         return local_db(&db_file_path).await;
     }
@@ -38,6 +43,8 @@ async fn replica_db(db_path: &str, db_url: &str) -> Result<Database, Error> {
     };
 
     let db = match Builder::new_remote_replica(db_path, db_url.to_string(), db_auth_token)
+        .read_your_writes(true)
+        .sync_interval(Duration::from_secs(300))
         .build()
         .await
     {
@@ -58,9 +65,6 @@ async fn replica_db(db_path: &str, db_url: &str) -> Result<Database, Error> {
 }
 
 async fn local_db(db_path: &str) -> Result<Database, Error> {
-    let db_path_parts: Vec<&str> = db_path.split('/').collect();
-    let new_db_path = db_path_parts[..db_path_parts.len() - 1].join("/");
-    std::fs::create_dir_all(new_db_path).expect("Failed to create database directory.");
     let db = Builder::new_local(db_path)
         .build()
         .await

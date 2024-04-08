@@ -1,3 +1,5 @@
+use std::env;
+
 use crate::{
     db,
     jobs::{embed_scrapes::main as run_embed_scrapes, scrape_sm::main as run_scrape_sm},
@@ -5,6 +7,7 @@ use crate::{
 };
 
 pub async fn process_job() -> Result<(), std::io::Error> {
+    env::set_var("DB_FILE_PATH", "./.data/jobs.db");
     let db = match db::start_db().await {
         Ok(db) => db,
         Err(err) => {
@@ -84,5 +87,6 @@ pub async fn process_job() -> Result<(), std::io::Error> {
         .await
         .expect("Failed to update job status");
 
+    db.sync().await.expect("Failed to sync jobs db");
     Ok(())
 }
