@@ -37,9 +37,24 @@ async fn replica_db(db_path: &str, db_url: &str) -> Result<Database, Error> {
         }
     };
 
-    Builder::new_remote_replica(db_path, db_url.to_string(), db_auth_token)
+    let db = match Builder::new_remote_replica(db_path, db_url.to_string(), db_auth_token)
         .build()
         .await
+    {
+        Ok(db) => db,
+        Err(e) => return Err(e),
+    };
+    let conn = match db.connect() {
+        Ok(con) => con,
+        Err(e) => return Err(e),
+    };
+
+    match init_schema(&conn).await {
+        Ok(_) => (),
+        Err(e) => return Err(e),
+    }
+
+    Ok(db)
 }
 
 async fn local_db(db_path: &str) -> Result<Database, Error> {

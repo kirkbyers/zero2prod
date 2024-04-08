@@ -11,4 +11,5 @@ lint-ci:
 	cargo clippy -- -D warnings
 
 test:
+	rm ./.data/tests.db
 	cargo test
