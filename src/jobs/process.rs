@@ -67,6 +67,7 @@ pub async fn process_job() -> Result<(), std::io::Error> {
     conn.execute(&update_query, ())
         .await
         .expect("Failed to update job status");
+    db.sync().await.expect("Failed to sync jobs db");
 
     match pending_job_type {
         i if i == jobs::JobType::SMScrape.as_i32() => {
