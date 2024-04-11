@@ -1,15 +1,48 @@
 use actix_web::{get, web, HttpResponse};
 use tera::{Context, Tera};
 
-use crate::{models::sm_scrape, routes::scrapes};
+use crate::{
+    models::{jobs, sm_scrape},
+    routes::scrapes,
+};
 
 #[get("/")]
 async fn home(conn: web::Data<libsql::Connection>) -> HttpResponse {
     let mut tera_context = Context::new();
 
+    let recent_scrape_job = jobs::select_with_pagination(
+        "created_at, completed_at",
+        &format!("job_type = {}", jobs::JobType::SMScrape.as_i32()),
+        "created_at",
+        "DESC",
+        1,
+        0,
+    );
+    println!("{}", recent_scrape_job);
+    let scrape_row = match conn.get_ref().query(&recent_scrape_job, ()).await {
+        Ok(mut row) => match row.next().await {
+            Ok(row) => row,
+            Err(e) => {
+                eprintln!("Error: {:?}", e);
+                return HttpResponse::InternalServerError().body("Error parsing db results");
+            }
+        },
+        Err(e) => {
+            eprintln!("Error: {}", e);
+            return HttpResponse::InternalServerError().body("Error querying the database");
+        }
+    };
+    let scrape_created_at: String = match scrape_row {
+        Some(scrape) => scrape.get::<String>(0).unwrap_or(String::new()),
+        None => String::new(),
+    };
+
     let select_page = sm_scrape::select_with_pagination(
         "id, url, arrival, lot_size, bag_size, score, packaging, cultivar_detail, spro_rec",
-        "score != ''",
+        &format!(
+            "score != '' AND strftime(scraped_at) > strftime('{}')",
+            scrape_created_at
+        ),
         "score",
         "DESC",
         200,

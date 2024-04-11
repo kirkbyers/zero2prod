@@ -1,7 +1,7 @@
 use crate::models::utils::create_paginator;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Copy, Clone)]
+#[derive(Serialize, Deserialize, Copy, Clone, Debug)]
 pub enum JobType {
     SMScrape = 0,
     Embed = 1,
@@ -65,6 +65,7 @@ pub fn select_with_pagination(
     create_paginator("jobs")(columns, q, sort_by, sort_direction, limit, offset)
 }
 
+// TODO: timestampz isn't easily comparable.
 pub const INIT_TABLE: &str = r#"
 CREATE TABLE IF NOT EXISTS jobs (
     id uuid NOT NULL PRIMARY KEY,
