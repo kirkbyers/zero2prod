@@ -7,3 +7,11 @@ A follow along project while I read through [Zero To Production In Rust](https:/
 - [actix-web Docs](https://actix.rs/docs/)
 - [tokio](https://tokio.rs)
 - [Open AI Embeddings](https://platform.openai.com/docs/api-reference/embeddings/create)
+
+## TODO
+
+- [] Add better JS sorting for /
+- [] Migrations
+- [] Add title to scrapes
+- [] Add source to scrapes
+- [] Add tables for scrape type
