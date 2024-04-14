@@ -12,7 +12,6 @@ A follow along project while I read through [Zero To Production In Rust](https:/
 ## TODO
 
 - [] Add better JS sorting for /
-- [] Migrations
 - [] Add title to scrapes
 - [] Add source to scrapes
 - [] Add tables for scrape type
