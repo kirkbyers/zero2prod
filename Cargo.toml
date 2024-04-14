@@ -20,6 +20,10 @@ path = "src/bin/sm_scraper.rs"
 name = "embed_scrapes"
 path = "src/bin/embed_scrapes.rs"
 
+[[bin]]
+name = "migrate"
+path = "src/bin/migrate.rs"
+
 [dependencies]
 actix-web = "4"
 bytes = "1.5.0"
