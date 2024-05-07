@@ -21,6 +21,10 @@ name = "embed_scrapes"
 path = "src/bin/embed_scrapes.rs"
 
 [[bin]]
+name = "fast_embed_scrapes"
+path = "src/bin/fast_embed_scrapes.rs"
+
+[[bin]]
 name = "migrate"
 path = "src/bin/migrate.rs"
 
@@ -39,3 +43,4 @@ async-openai = "0.19.1"
 tiktoken-rs = { version = "0.5.8", features = ["async-openai"] }
 tera = "1.19.1"
 dotenvy = "0.15.7"
+fastembed = "3.5.0"
