@@ -7,6 +7,7 @@ A follow along project while I read through [Zero To Production In Rust](https:/
 - [actix-web Docs](https://actix.rs/docs/)
 - [tokio](https://tokio.rs)
 - [Open AI Embeddings](https://platform.openai.com/docs/api-reference/embeddings/create)
+- [FastEmbedd-rs](https://github.com/Anush008/fastembed-rs)
 - [SQLite](https://www.sqlite.org)
 
 ## TODO
