@@ -6,7 +6,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         Ok(v) => Ok(v),
         Err(e) => {
             println!("{:?}", e);
-            Err(e.into())
+            Err(e)
         }
     }
 }

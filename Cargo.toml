@@ -28,6 +28,10 @@ path = "src/bin/fast_embed_scrapes.rs"
 name = "migrate"
 path = "src/bin/migrate.rs"
 
+[[bin]]
+name = "fast_embed_similars"
+path = "src/bin/fast_embed_similars.rs"
+
 [dependencies]
 actix-web = "4"
 bytes = "1.5.0"
