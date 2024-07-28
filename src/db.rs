@@ -23,7 +23,9 @@ pub async fn start_db() -> Result<Database, Error> {
 
     let db_path_parts: Vec<&str> = db_file_path.split('/').collect();
     let new_db_path = db_path_parts[..db_path_parts.len() - 1].join("/");
-    std::fs::create_dir_all(new_db_path).expect("Failed to create database directory.");
+    std::fs::create_dir_all(new_db_path).map_err(|_| {
+        Error::ConnectionFailed(String::from("Failed to create database directory."))
+    })?;
 
     if db_url.is_empty() {
         return local_db(&db_file_path).await;
@@ -68,11 +70,13 @@ async fn local_db(db_path: &str) -> Result<Database, Error> {
     let db = Builder::new_local(db_path)
         .build()
         .await
-        .expect("Failed to create database.");
-    let conn = db.connect().expect("Failed to connect to database.");
+        .map_err(|_| Error::ConnectionFailed(String::from("Failed to create database.")))?;
+    let conn = db
+        .connect()
+        .map_err(|_| Error::ConnectionFailed(String::from("Failed to connect to database.")))?;
     init_schema(&conn)
         .await
-        .expect("Failed to initialize schema.");
+        .map_err(|_| Error::ConnectionFailed(String::from("Failed to initialize schema.")))?;
 
     Ok(db)
 }
