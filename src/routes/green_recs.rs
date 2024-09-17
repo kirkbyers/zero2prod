@@ -21,7 +21,7 @@ pub struct GreenRecQuery {
 }
 
 #[post("/green_recs")]
-pub async fn create_green_rec(
+pub async fn make_green_rec(
     query: web::Query<GreenRecQuery>,
     json: web::Json<GreenRecData>,
     conn: web::Data<libsql::Connection>,

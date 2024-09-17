@@ -1,7 +1,7 @@
 use crate::{
     db,
     routes::{
-        create_green_rec, get_jobs, get_scrapes, health_check_route, home, start_job, subscribe,
+        get_jobs, get_scrapes, health_check_route, home, make_green_rec, start_job, subscribe,
     },
 };
 use actix_web::{dev::Server, web, App, HttpServer};
@@ -37,7 +37,7 @@ pub async fn run(listener: TcpListener) -> Result<Server, std::io::Error> {
                 web::scope("/api")
                     .service(health_check_route)
                     .service(subscribe)
-                    .service(create_green_rec)
+                    .service(make_green_rec)
                     .service(get_scrapes)
                     .service(web::scope("/jobs").service(get_jobs).service(start_job)),
             )

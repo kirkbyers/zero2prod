@@ -126,11 +126,11 @@ pub async fn get_page(
 
 pub const INIT_TABLE: &str = r#"
 CREATE TABLE IF NOT EXISTS sm_scrapes (
-    id uuid NOT NULL PRIMARY KEY,
+    id TEXT PRIMARY KEY,
     url TEXT NOT NULL,
     original TEXT,
     content TEXT,
-    scraped_at timestampz NOT NULL,
+    scraped_at TEXT NOT NULL,
     embedding BLOB,
     region TEXT,
     processing TEXT,

@@ -1,5 +1,6 @@
 use crate::{db::start_db, models::sm_scrape::get_page, services::open_ai::OpenAI};
 
+#[deprecated = "Use fast_embed_scrapes"]
 pub async fn main() {
     let db = start_db().await.unwrap();
     let conn = db.connect().unwrap();

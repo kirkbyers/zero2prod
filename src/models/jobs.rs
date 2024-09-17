@@ -68,11 +68,11 @@ pub fn select_with_pagination(
 // TODO: timestampz isn't easily comparable.
 pub const INIT_TABLE: &str = r#"
 CREATE TABLE IF NOT EXISTS jobs (
-    id uuid NOT NULL PRIMARY KEY,
+    id TEXT PRIMARY KEY,
     job_type INTEGER NOT NULL,
     job_status INTEGER NOT NULL,
-    created_at timestampz NOT NULL,
-    updated_at timestampz NOT NULL,
-    completed_at timestampz
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    completed_at TEXT
 );
 "#;
