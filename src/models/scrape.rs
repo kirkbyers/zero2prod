@@ -112,13 +112,13 @@ pub async fn get_page(
                 .collect()
         });
 
-        let mut new_row = ScrapeRow::new();
-        new_row.id = id;
-        new_row.url = url;
-        new_row.content = content;
-        new_row.scraped_at = scraped_at;
-        new_row.embedding = embedding;
-        scrapes.push(new_row);
+        let mut result_row = ScrapeRow::new();
+        result_row.id = id;
+        result_row.url = url;
+        result_row.content = content;
+        result_row.scraped_at = scraped_at;
+        result_row.embedding = embedding;
+        scrapes.push(result_row);
     }
 
     Ok(scrapes)
