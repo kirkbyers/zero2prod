@@ -1,15 +1,19 @@
 use actix_web::rt;
 use dotenvy::dotenv;
-use std::net::TcpListener;
+use std::{env::var, net::TcpListener};
 
-use zero2prod::{configuration::get_configuration, jobs::process::process_job, startup::run};
+use zero2prod::{jobs::process::process_job, startup::run};
 
 #[actix_web::main]
 async fn main() -> Result<(), std::io::Error> {
-    let config =
-        get_configuration(Some("configuration.yaml")).expect("Failed to read configuration.");
     dotenv().expect("No .env file found");
-    let address = format!("0.0.0.0:{}", config.application_port);
+
+    let application_port = match var("APPLICATION_PORT") {
+        Ok(s) => s,
+        Err(_) => "8000".to_string(),
+    };
+
+    let address = format!("0.0.0.0:{}", application_port);
     let listener = TcpListener::bind(address)?;
 
     rt::spawn(async move {
