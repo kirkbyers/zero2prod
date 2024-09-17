@@ -2,7 +2,7 @@ use actix_web::{get, web, HttpResponse};
 use tera::{Context, Tera};
 
 use crate::{
-    models::{jobs, sm_scrape},
+    models::{jobs, scrape},
     routes::scrapes,
 };
 
@@ -37,7 +37,7 @@ async fn home(conn: web::Data<libsql::Connection>) -> HttpResponse {
         None => String::new(),
     };
 
-    let select_page = sm_scrape::select_with_pagination(
+    let select_page = scrape::select_with_pagination(
         "id, url, arrival, lot_size, bag_size, score, packaging, cultivar_detail, spro_rec",
         &format!(
             "score != '' AND strftime(scraped_at) > strftime('{}')",

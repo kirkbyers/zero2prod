@@ -65,7 +65,6 @@ pub fn select_with_pagination(
     create_paginator("jobs")(columns, q, sort_by, sort_direction, limit, offset)
 }
 
-// TODO: timestampz isn't easily comparable.
 pub const INIT_TABLE: &str = r#"
 CREATE TABLE IF NOT EXISTS jobs (
     id TEXT PRIMARY KEY,

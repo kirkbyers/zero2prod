@@ -4,7 +4,7 @@ use libsql::{Connection, Error};
 use crate::models::utils::create_paginator;
 
 #[derive(Debug)]
-pub struct SMScrapeRow {
+pub struct ScrapeRow {
     pub id: String,
     pub url: String,
     pub content: String,
@@ -26,7 +26,7 @@ pub struct SMScrapeRow {
     pub spro_rec: String,
 }
 
-impl SMScrapeRow {
+impl ScrapeRow {
     pub fn new() -> Self {
         Self {
             id: String::new(),
@@ -52,7 +52,7 @@ impl SMScrapeRow {
     }
 }
 
-impl Default for SMScrapeRow {
+impl Default for ScrapeRow {
     fn default() -> Self {
         Self::new()
     }
@@ -66,14 +66,14 @@ pub fn select_with_pagination(
     limit: u32,
     offset: u32,
 ) -> String {
-    create_paginator("sm_scrapes")(columns, q, sort_by, sort_direction, limit, offset)
+    create_paginator("scrapes")(columns, q, sort_by, sort_direction, limit, offset)
 }
 
 fn select_page(filter_non_null_embeddings: bool) -> String {
     let mut result = String::from(
         r#"
         SELECT id, url, content, scraped_at, embedding
-        FROM sm_scrapes
+        FROM scrapes
     "#,
     );
     if filter_non_null_embeddings {
@@ -88,7 +88,7 @@ pub async fn get_page(
     limit: u32,
     offset: u32,
     filter_non_null_embeddings: bool,
-) -> Result<Vec<SMScrapeRow>, Error> {
+) -> Result<Vec<ScrapeRow>, Error> {
     let mut stmt = conn
         .prepare(&select_page(filter_non_null_embeddings))
         .await?;
@@ -112,7 +112,7 @@ pub async fn get_page(
                 .collect()
         });
 
-        let mut new_row = SMScrapeRow::new();
+        let mut new_row = ScrapeRow::new();
         new_row.id = id;
         new_row.url = url;
         new_row.content = content;
@@ -125,7 +125,7 @@ pub async fn get_page(
 }
 
 pub const INIT_TABLE: &str = r#"
-CREATE TABLE IF NOT EXISTS sm_scrapes (
+CREATE TABLE IF NOT EXISTS scrapes (
     id TEXT PRIMARY KEY,
     url TEXT NOT NULL,
     original TEXT,

@@ -3,10 +3,19 @@ use std::{env, time::Duration};
 use libsql::{Builder, Connection, Database, Error};
 
 use crate::models::{
-    jobs::INIT_TABLE as JOBS_INIT, sm_scrape::INIT_TABLE as SCRAPE_INIT,
+    jobs::INIT_TABLE as JOBS_INIT, scrape::INIT_TABLE as SCRAPE_INIT,
     subscriptions::INIT_TABLE as SUBSCRIPTIONS_INIT,
 };
 
+/// Starts a database connection.
+/// Set DB_URL to Turso db url if using Turso
+/// Set DB_FILE_PATH to where you want the db file created including the db file name
+///
+/// # Result
+/// libsql::Database
+///
+/// # Error
+/// libsql::Error
 pub async fn start_db() -> Result<Database, Error> {
     let db_url = match env::var("DB_URL") {
         Ok(url) => url,

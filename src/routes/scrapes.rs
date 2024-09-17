@@ -1,4 +1,4 @@
-use crate::models::sm_scrape;
+use crate::models::scrape;
 use actix_web::{get, web, HttpResponse};
 use libsql::Rows;
 use serde::{Deserialize, Serialize};
@@ -50,7 +50,7 @@ async fn get_scrapes(
         None => "",
     };
 
-    let select_page = sm_scrape::select_with_pagination(
+    let select_page = scrape::select_with_pagination(
         "id, url, arrival, lot_size, bag_size, score, packaging, cultivar_detail, spro_rec",
         q,
         sort_by,

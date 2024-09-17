@@ -1,6 +1,6 @@
 use crate::{
     db::start_db,
-    models::{fast_embeds, sm_scrape::get_page},
+    models::{fast_embeds, scrape::get_page},
 };
 use fastembed::{InitOptions, TextEmbedding};
 use uuid::Uuid;

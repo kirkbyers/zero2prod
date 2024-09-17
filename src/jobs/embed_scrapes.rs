@@ -1,4 +1,4 @@
-use crate::{db::start_db, models::sm_scrape::get_page, services::open_ai::OpenAI};
+use crate::{db::start_db, models::scrape::get_page, services::open_ai::OpenAI};
 
 #[deprecated = "Use fast_embed_scrapes"]
 pub async fn main() {
@@ -16,7 +16,7 @@ pub async fn main() {
                 .flat_map(|f| f.to_ne_bytes().to_vec())
                 .collect();
             conn.execute(
-                "UPDATE sm_scrapes SET embedding = ? WHERE id = ?",
+                "UPDATE scrapes SET embedding = ? WHERE id = ?",
                 (blob_embedding, scrape.id),
             )
             .await

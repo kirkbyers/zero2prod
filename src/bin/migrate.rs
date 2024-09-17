@@ -2,6 +2,15 @@ use std::{env, fs};
 
 use zero2prod::{db, jobs};
 
+/// Runs database migrations using the provided migration files.
+///
+/// # Arguments
+///
+/// - path to migrations directory
+///
+/// # Example
+///
+/// `cargo run --bin migrate ./migrations`
 #[tokio::main]
 async fn main() {
     let args: Vec<String> = env::args().collect();
@@ -26,6 +35,8 @@ async fn main() {
         } else {
             migration_files.push(path_res.to_str().unwrap().to_string());
         }
+
+        migration_files.sort();
 
         for migration_file in migration_files {
             let file_content = fs::read_to_string(&migration_file).unwrap();

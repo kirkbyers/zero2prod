@@ -88,7 +88,7 @@ pub async fn main() {
 }
 
 const INSERT_QUERY: &str = r#"
-    INSERT INTO sm_scrapes (
+    INSERT INTO scrapes (
         id, 
         url, 
         content, 

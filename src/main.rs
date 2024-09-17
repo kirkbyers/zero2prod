@@ -18,6 +18,7 @@ async fn main() -> Result<(), std::io::Error> {
 
     rt::spawn(async move {
         loop {
+            dotenv().expect("No .env file found");
             process_job().await.expect("Failed to process job");
             tokio::time::sleep(std::time::Duration::from_secs(30)).await;
         }
