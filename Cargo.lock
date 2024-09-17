@@ -304,31 +304,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "async-openai"
-version = "0.19.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fbc0b1877fb1bc415caa14d1899f0f477e8eb38f2fe16f54be196d7c4a92e15c"
-dependencies = [
- "async-convert",
- "backoff",
- "base64 0.21.7",
- "bytes",
- "derive_builder",
- "futures",
- "rand",
- "reqwest",
- "reqwest-eventsource",
- "secrecy",
- "serde",
- "serde_json",
- "thiserror",
- "tokio",
- "tokio-stream",
- "tokio-util",
- "tracing",
-]
-
-[[package]]
 name = "async-stream"
 version = "0.3.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2884,16 +2859,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "secrecy"
-version = "0.8.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9bd1c54ea06cfd2f6b63219704de0b9b4f72dcc2b8fdef820be6cd799780e91e"
-dependencies = [
- "serde",
- "zeroize",
-]
-
-[[package]]
 name = "security-framework"
 version = "2.9.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3271,7 +3236,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "40894b788eb28bbb7e36bdc8b7b1b1488b9c93fa3730f315ab965330c94c0842"
 dependencies = [
  "anyhow",
- "async-openai 0.14.3",
+ "async-openai",
  "base64 0.21.7",
  "bstr",
  "fancy-regex",
@@ -4127,7 +4092,6 @@ version = "0.1.0"
 dependencies = [
  "actix-web",
  "anyhow",
- "async-openai 0.19.1",
  "bytes",
  "chrono",
  "dotenvy",

@@ -1,6 +1,6 @@
 use crate::{
     db,
-    jobs::{embed_scrapes::main as run_embed_scrapes, scrape_sm::main as run_scrape_sm},
+    jobs::{fast_embed_scrapes, scrape_sm::main as run_scrape_sm},
     models::jobs,
 };
 
@@ -73,7 +73,7 @@ pub async fn process_job() -> Result<(), std::io::Error> {
         }
         i if i == jobs::JobType::Embed.as_i32() => {
             eprintln!("Embed job running");
-            run_embed_scrapes().await;
+            let _ = fast_embed_scrapes::main().await;
         }
         _ => {
             eprintln!("Unknown job type");

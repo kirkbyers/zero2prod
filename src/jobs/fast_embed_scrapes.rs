@@ -2,11 +2,12 @@ use crate::{
     db::start_db,
     models::{fast_embeds, scrape::get_page},
 };
+use anyhow::Result;
 use fastembed::{InitOptions, TextEmbedding};
 use libsql::params;
 use uuid::Uuid;
 
-pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
+pub async fn main() -> Result<()> {
     let db = start_db().await.unwrap();
     let conn = db.connect().unwrap();
 
@@ -41,7 +42,7 @@ pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 doc_id: scrape.id.to_string(),
                 embedding: res_embedding.clone(),
             };
-            new_fast_embed.insert(&conn).await?;
+            let _ = new_fast_embed.insert(&conn).await;
             conn.execute(
                 "UPDATE scrapes SET embedding = ? WHERE id = ?",
                 params![res_embedding, scrape.id.to_string()],

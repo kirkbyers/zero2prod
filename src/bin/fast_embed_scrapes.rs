@@ -1,7 +1,8 @@
+use anyhow::Result;
 use zero2prod::jobs;
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+async fn main() -> Result<()> {
     match jobs::fast_embed_scrapes::main().await {
         Ok(v) => Ok(v),
         Err(e) => {

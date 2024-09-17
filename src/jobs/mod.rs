@@ -1,4 +1,3 @@
-pub mod embed_scrapes;
 pub mod fast_embed_scrapes;
 pub mod migrations;
 pub mod process;
