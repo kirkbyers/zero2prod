@@ -43,8 +43,10 @@ pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
             };
             new_fast_embed.insert(&conn).await?;
             conn.execute(
-                "UPDATE scrapes SET embedding = ? WHERE id = ?"
-            , params![res_embedding, scrape.id.to_string()]).await?;
+                "UPDATE scrapes SET embedding = ? WHERE id = ?",
+                params![res_embedding, scrape.id.to_string()],
+            )
+            .await?;
         }
         page += 1;
         scrapes = get_page(conn.clone(), limit, limit * page, false)

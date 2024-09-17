@@ -1,8 +1,8 @@
 use crate::models::scrape;
 use actix_web::{error::ErrorInternalServerError, post, web, Error, HttpResponse};
+use anyhow::Result;
 use fastembed::{InitOptions, TextEmbedding};
 use serde::{Deserialize, Serialize};
-use anyhow::Result;
 
 #[derive(Deserialize)]
 pub struct GreenRecData {
@@ -30,10 +30,12 @@ pub async fn make_green_rec(
     let fast_embed_model = TextEmbedding::try_new(InitOptions {
         show_download_progress: true,
         ..Default::default()
-    }).map_err(|e| ErrorInternalServerError(e))?;
+    })
+    .map_err(ErrorInternalServerError)?;
 
-    let input_embedding = fast_embed_model.embed(vec![&json.description], Some(1))
-        .map_err(|e| ErrorInternalServerError(e))?;
+    let input_embedding = fast_embed_model
+        .embed(vec![&json.description], Some(1))
+        .map_err(ErrorInternalServerError)?;
 
     let scrapes = scrape::get_page(conn.get_ref().clone(), 150, 0, false)
         .await
@@ -43,7 +45,8 @@ pub async fn make_green_rec(
         Some(similarity) => similarity,
         None => &SimilarityOptions::Cosine,
     };
-    let closest_scrapes = find_closest_similarity(input_embedding[0].clone(), scrapes, similarity_option);
+    let closest_scrapes =
+        find_closest_similarity(input_embedding[0].clone(), scrapes, similarity_option);
 
     Ok(HttpResponse::Ok().json(closest_scrapes))
 }
