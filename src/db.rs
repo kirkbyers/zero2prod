@@ -17,10 +17,7 @@ use crate::models::{
 /// # Error
 /// libsql::Error
 pub async fn start_db() -> Result<Database, Error> {
-    let db_url = match env::var("DB_URL") {
-        Ok(url) => url,
-        Err(_) => String::new(),
-    };
+    let db_url = env::var("DB_URL").unwrap_or_default();
     let db_file_path = match env::var("DB_FILE_PATH") {
         Ok(file_path) => file_path,
         Err(_) => {

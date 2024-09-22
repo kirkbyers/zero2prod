@@ -1,6 +1,6 @@
 use actix_web::rt;
 use dotenvy::dotenv;
-use std::{env::var, net::TcpListener};
+use std::{env, net::TcpListener};
 
 use zero2prod::{jobs::process::process_job, startup::run};
 
@@ -8,10 +8,7 @@ use zero2prod::{jobs::process::process_job, startup::run};
 async fn main() -> Result<(), std::io::Error> {
     dotenv().expect("No .env file found");
 
-    let application_port = match var("APPLICATION_PORT") {
-        Ok(s) => s,
-        Err(_) => "8000".to_string(),
-    };
+    let application_port = env::var("APPLICATION_PORT").unwrap_or("8000".to_string());
 
     let address = format!("0.0.0.0:{}", application_port);
     let listener = TcpListener::bind(address)?;
