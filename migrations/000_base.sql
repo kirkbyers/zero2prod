@@ -7,11 +7,11 @@ CREATE TABLE IF NOT EXISTS subscriptions (
 
 CREATE TABLE IF NOT EXISTS scrapes (
     id TEXT PRIMARY KEY,
+    batch_id INTEGER,
     url TEXT NOT NULL,
     original TEXT,
     content TEXT,
     scraped_at TEXT NOT NULL,
-    embedding BLOB,
     region TEXT,
     processing TEXT,
     drying TEXT,

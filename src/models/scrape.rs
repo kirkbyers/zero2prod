@@ -72,12 +72,14 @@ pub fn select_with_pagination(
 fn select_page(filter_non_null_embeddings: bool) -> String {
     let mut result = String::from(
         r#"
-        SELECT id, url, content, scraped_at, embedding
-        FROM scrapes
+        SELECT s.id, s.url, s.content, s.scraped_at, se.embedding
+        FROM scrapes AS s
+        LEFT JOIN scrape_embeddings AS se
+        ON se.scrape_id = s.id
     "#,
     );
     if filter_non_null_embeddings {
-        result.push_str(" WHERE embedding IS NULL");
+        result.push_str(" WHERE se.embedding IS NULL");
     }
     result.push_str(" ORDER BY scraped_at ASC LIMIT ? OFFSET ?");
     result

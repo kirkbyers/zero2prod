@@ -1,4 +1,4 @@
-pub mod fast_embeds;
+pub mod scrape_embeddings;
 pub mod jobs;
 pub mod scrape;
 pub mod subscriptions;

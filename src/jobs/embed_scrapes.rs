@@ -1,10 +1,9 @@
 use crate::{
     db::start_db,
-    models::{fast_embeds, scrape::get_page},
+    models::{scrape_embeddings, scrape::get_page},
 };
 use anyhow::Result;
 use fastembed::{InitOptions, TextEmbedding};
-use libsql::params;
 use uuid::Uuid;
 
 pub async fn main() -> Result<()> {
@@ -36,18 +35,12 @@ pub async fn main() -> Result<()> {
                 .iter()
                 .flat_map(|f| f.to_ne_bytes().to_vec())
                 .collect();
-            let new_fast_embed = fast_embeds::FastEmbed {
+            let new_fast_embed = scrape_embeddings::ScrapeEmbedding {
                 id: Uuid::new_v4().to_string(),
-                doc_type: String::from("sm_scrape"),
-                doc_id: scrape.id.to_string(),
+                scrape_id: scrape.id.to_string(),
                 embedding: res_embedding.clone(),
             };
             let _ = new_fast_embed.insert(&conn).await;
-            conn.execute(
-                "UPDATE scrapes SET embedding = ? WHERE id = ?",
-                params![res_embedding, scrape.id.to_string()],
-            )
-            .await?;
         }
         page += 1;
         scrapes = get_page(conn.clone(), limit, limit * page, false)

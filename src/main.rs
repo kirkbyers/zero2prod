@@ -11,6 +11,7 @@ async fn main() -> Result<(), std::io::Error> {
     let application_port = env::var("APPLICATION_PORT").unwrap_or("8000".to_string());
 
     let address = format!("0.0.0.0:{}", application_port);
+    println!("Listening on port {application_port}");
     let listener = TcpListener::bind(address)?;
 
     rt::spawn(async move {

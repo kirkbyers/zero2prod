@@ -1,4 +1,4 @@
-use zero2prod::{db::start_db, models::fast_embeds};
+use zero2prod::{db::start_db, models::scrape_embeddings};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -8,14 +8,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let limit = 10;
     let mut page: u32 = 0;
 
-    let mut fast_embed_recs = fast_embeds::get_page(&conn, &limit, &(limit * page))
+    let mut fast_embed_recs = scrape_embeddings::get_page(&conn, &limit, &(limit * page))
         .await
         .unwrap();
-    let mut all_fast_embeds: Vec<fast_embeds::FastEmbed> = vec![];
+    let mut all_fast_embeds: Vec<scrape_embeddings::ScrapeEmbedding> = vec![];
     while !fast_embed_recs.is_empty() {
         all_fast_embeds.append(&mut fast_embed_recs);
         page += 1;
-        fast_embed_recs = fast_embeds::get_page(&conn, &limit, &(limit * page))
+        fast_embed_recs = scrape_embeddings::get_page(&conn, &limit, &(limit * page))
             .await
             .unwrap();
     }
@@ -43,7 +43,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         println!(
             "{:?} - {max_similarity:} - {:?}",
-            all_fast_embeds[i].doc_id, all_fast_embeds[similar_index].doc_id
+            all_fast_embeds[i].scrape_id, all_fast_embeds[similar_index].scrape_id
         );
     }
 

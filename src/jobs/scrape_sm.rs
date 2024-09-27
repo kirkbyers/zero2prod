@@ -2,6 +2,7 @@ use std::{thread::sleep, time::Duration};
 
 use crate::{db::start_db, services::scraper};
 use chrono::Utc;
+use libsql::params;
 use uuid::Uuid;
 
 macro_rules! unwrap_table_data {
@@ -13,6 +14,18 @@ macro_rules! unwrap_table_data {
 pub async fn main() {
     let db = start_db().await.unwrap();
     let conn = db.connect().unwrap();
+
+    let mut rows = conn
+        .query("SELECT COALESCE(MAX(batch_id), 0) FROM scrapes", params![])
+        .await
+        .expect("Failed to query max batch_id");
+
+    let max_batch_id: i32 = if let Ok(Some(row)) = rows.next().await {
+        row.get(0).unwrap()
+    } else {
+        0
+    };
+    let batch_id = max_batch_id + 1;
 
     let scraper = scraper::Scraper::new();
     let res = scraper
@@ -77,6 +90,7 @@ pub async fn main() {
                 coffee_type,
                 spro_rec,
                 score,
+                batch_id.to_string()
             ])
             .await
         {
@@ -108,7 +122,8 @@ const INSERT_QUERY: &str = r#"
         roast_rec,
         coffee_type,
         spro_rec,
-        score
+        score,
+        batch_id
     )
-    VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18, ?19, ?20);
+    VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18, ?19, ?20, ?21);
 "#;
