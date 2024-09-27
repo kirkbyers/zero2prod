@@ -97,7 +97,7 @@ pub async fn run_all_in_dir(
 
     for migration_file in migration_files {
         let file_content = fs::read_to_string(&migration_file)?;
-        run_up(&conn, &migration_file, &file_content).await.unwrap();
+        run_up(conn, &migration_file, &file_content).await.unwrap();
     }
     Ok(())
 }
