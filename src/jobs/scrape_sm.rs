@@ -90,7 +90,7 @@ pub async fn main() {
                 coffee_type,
                 spro_rec,
                 score,
-                batch_id.to_string()
+                batch_id.to_string(),
             ])
             .await
         {

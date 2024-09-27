@@ -1,6 +1,6 @@
 use crate::{
     db::start_db,
-    models::{scrape_embeddings, scrape::get_page},
+    models::{scrape::get_page, scrape_embeddings},
 };
 use anyhow::Result;
 use fastembed::{InitOptions, TextEmbedding};
