@@ -123,29 +123,3 @@ pub async fn get_page(
 
     Ok(scrapes)
 }
-
-pub const INIT_TABLE: &str = r#"
-CREATE TABLE IF NOT EXISTS scrapes (
-    id TEXT PRIMARY KEY,
-    url TEXT NOT NULL,
-    original TEXT,
-    content TEXT,
-    scraped_at TEXT NOT NULL,
-    embedding BLOB,
-    region TEXT,
-    processing TEXT,
-    drying TEXT,
-    arrival TEXT,
-    lot_size TEXT,
-    bag_size TEXT,
-    packaging TEXT,
-    farm_gate TEXT,
-    cultivar_detail TEXT,
-    grade TEXT,
-    appearance TEXT,
-    roast_rec TEXT,
-    coffee_type TEXT,
-    spro_rec TEXT,
-    score REAL
-);
-"#;

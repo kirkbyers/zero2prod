@@ -1,1 +1,0 @@
-SELECT Count(*) from jobs;

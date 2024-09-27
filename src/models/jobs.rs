@@ -64,14 +64,3 @@ pub fn select_with_pagination(
 ) -> String {
     create_paginator("jobs")(columns, q, sort_by, sort_direction, limit, offset)
 }
-
-pub const INIT_TABLE: &str = r#"
-CREATE TABLE IF NOT EXISTS jobs (
-    id TEXT PRIMARY KEY,
-    job_type INTEGER NOT NULL,
-    job_status INTEGER NOT NULL,
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-    completed_at TEXT
-);
-"#;

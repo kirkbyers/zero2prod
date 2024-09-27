@@ -2,10 +2,7 @@ use std::{env, time::Duration};
 
 use libsql::{Builder, Connection, Database, Error};
 
-use crate::models::{
-    jobs::INIT_TABLE as JOBS_INIT, scrape::INIT_TABLE as SCRAPE_INIT,
-    subscriptions::INIT_TABLE as SUBSCRIPTIONS_INIT,
-};
+use crate::jobs::migrations;
 
 /// Starts a database connection.
 /// Set DB_URL to Turso db url if using Turso
@@ -88,8 +85,6 @@ async fn local_db(db_path: &str) -> Result<Database, Error> {
 }
 
 async fn init_schema(conn: &Connection) -> Result<(), Error> {
-    conn.execute(SUBSCRIPTIONS_INIT, ()).await?;
-    conn.execute(SCRAPE_INIT, ()).await?;
-    conn.execute(JOBS_INIT, ()).await?;
+    migrations::run_all_in_dir(conn, "./migrations").await.unwrap();
     Ok(())
 }

@@ -1,3 +1,5 @@
+use std::{env, fs};
+
 use libsql::{Connection, Error};
 
 const MIGRATION_TABLE_NAME: &str = "migrations";
@@ -56,7 +58,7 @@ pub async fn run_up(conn: &Connection, title: &str, migration_sql: &str) -> Resu
         }
         None => {
             println!("Running Migration '{}'", title);
-            conn.query(migration_sql, ()).await?;
+            conn.execute_batch(migration_sql).await?;
 
             let now = chrono::Utc::now().to_rfc3339();
             let uuid = uuid::Uuid::new_v4();
@@ -69,4 +71,32 @@ pub async fn run_up(conn: &Connection, title: &str, migration_sql: &str) -> Resu
             Ok(())
         }
     }
+}
+
+
+pub async fn run_all_in_dir(conn: &Connection, dir_path: &str) -> Result<(), Box<dyn std::error::Error>> {
+    let current_dir = env::current_dir()?;
+    let mut migration_files: Vec<String> = vec![];
+    let path_res = current_dir.join(dir_path);
+
+    if path_res.is_dir() {
+        for entry in fs::read_dir(path_res).unwrap() {
+            let entry = entry.unwrap();
+            let entry_path = entry.path();
+            if entry_path.is_file() {
+                migration_files.push(entry_path.to_str().unwrap().to_string())
+            }
+        }
+    } else {
+        migration_files.push(path_res.to_str().unwrap().to_string());
+    }
+
+    migration_files.sort();
+
+    for migration_file in migration_files {
+        let file_content = fs::read_to_string(&migration_file)?;
+        run_up(&conn, &migration_file, &file_content).await
+        .unwrap();
+    }
+    Ok(())
 }
