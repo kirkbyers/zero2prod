@@ -73,8 +73,10 @@ pub async fn run_up(conn: &Connection, title: &str, migration_sql: &str) -> Resu
     }
 }
 
-
-pub async fn run_all_in_dir(conn: &Connection, dir_path: &str) -> Result<(), Box<dyn std::error::Error>> {
+pub async fn run_all_in_dir(
+    conn: &Connection,
+    dir_path: &str,
+) -> Result<(), Box<dyn std::error::Error>> {
     let current_dir = env::current_dir()?;
     let mut migration_files: Vec<String> = vec![];
     let path_res = current_dir.join(dir_path);
@@ -95,8 +97,7 @@ pub async fn run_all_in_dir(conn: &Connection, dir_path: &str) -> Result<(), Box
 
     for migration_file in migration_files {
         let file_content = fs::read_to_string(&migration_file)?;
-        run_up(&conn, &migration_file, &file_content).await
-        .unwrap();
+        run_up(&conn, &migration_file, &file_content).await.unwrap();
     }
     Ok(())
 }

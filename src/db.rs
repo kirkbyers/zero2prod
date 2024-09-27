@@ -85,6 +85,8 @@ async fn local_db(db_path: &str) -> Result<Database, Error> {
 }
 
 async fn init_schema(conn: &Connection) -> Result<(), Error> {
-    migrations::run_all_in_dir(conn, "./migrations").await.unwrap();
+    migrations::run_all_in_dir(conn, "./migrations")
+        .await
+        .unwrap();
     Ok(())
 }
