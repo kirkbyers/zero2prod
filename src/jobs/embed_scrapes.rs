@@ -16,7 +16,7 @@ pub async fn main() -> Result<()> {
     })?;
     let limit = 10;
     let mut page = 0;
-    let mut scrapes = get_page(conn.clone(), limit, limit * page, false)
+    let mut scrapes = get_page(conn.clone(), limit, limit * page, true)
         .await
         .unwrap();
     while !scrapes.is_empty() {
@@ -43,7 +43,7 @@ pub async fn main() -> Result<()> {
             let _ = new_fast_embed.insert(&conn).await;
         }
         page += 1;
-        scrapes = get_page(conn.clone(), limit, limit * page, false)
+        scrapes = get_page(conn.clone(), limit, limit * page, true)
             .await
             .unwrap();
     }
