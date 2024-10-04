@@ -1,5 +1,6 @@
 use std::{env, fs};
 
+use dotenvy::dotenv;
 use zero2prod::{db, jobs};
 
 /// Runs database migrations using the provided migration files.
@@ -13,8 +14,12 @@ use zero2prod::{db, jobs};
 /// `cargo run --bin migrate ./migrations`
 #[tokio::main]
 async fn main() {
+    dotenv().expect("No .env file found");
     let args: Vec<String> = env::args().collect();
-    assert!(args.len() > 1);
+    assert!(
+        args.len() > 1,
+        "A path to the migrations directory must be provided"
+    );
 
     let db = db::start_db().await.unwrap();
     let conn = db.connect().unwrap();
@@ -39,6 +44,7 @@ async fn main() {
         migration_files.sort();
 
         for migration_file in migration_files {
+            println!("{migration_file:?}");
             let file_content = fs::read_to_string(&migration_file).unwrap();
             jobs::migrations::run_up(&conn, &migration_file, &file_content)
                 .await

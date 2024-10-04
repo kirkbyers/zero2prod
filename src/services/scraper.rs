@@ -1,13 +1,13 @@
 use std::collections::HashMap;
 
 use reqwest::header::{
-    HeaderMap, ACCEPT, ACCEPT_LANGUAGE, CONNECTION, COOKIE, DNT, HOST, UPGRADE_INSECURE_REQUESTS,
-    USER_AGENT,
+    HeaderMap, ACCEPT, ACCEPT_ENCODING, ACCEPT_LANGUAGE, CONNECTION, DNT, HOST,
+    UPGRADE_INSECURE_REQUESTS, USER_AGENT,
 };
 use scraper::{Html, Selector};
 
 pub struct Scraper {
-    _client: reqwest::Client,
+    client: reqwest::Client,
     headers: HeaderMap,
 }
 
@@ -19,37 +19,41 @@ impl Default for Scraper {
 
 impl Scraper {
     pub fn new() -> Self {
-        let client = reqwest::Client::new();
+        let client = reqwest::Client::builder()
+            .use_rustls_tls()
+            .gzip(true)
+            .deflate(true)
+            .brotli(true)
+            .build()
+            .expect("Failed to build client");
 
         let mut headers = HeaderMap::new();
         headers.insert(HOST, "www.sweetmarias.com".parse().unwrap());
-        headers.insert(USER_AGENT, "SOME_AGENT/1.0".parse().unwrap());
+        headers.insert(USER_AGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36".parse().unwrap());
         headers.insert(
             ACCEPT,
-            "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"
+            "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
                 .parse()
                 .unwrap(),
         );
-        headers.insert(ACCEPT_LANGUAGE, "en-US,en;q=0.5".parse().unwrap());
+        headers.insert(ACCEPT_ENCODING, "gzip, deflate, br".parse().unwrap());
+        headers.insert(ACCEPT_LANGUAGE, "en-US,en;q=0.9".parse().unwrap());
         headers.insert(DNT, "1".parse().unwrap());
         headers.insert(CONNECTION, "keep-alive".parse().unwrap());
-        headers.insert(COOKIE, "private_content_version=4425483136aa037ce455aa6e3eb78cf9; wp_ga4_customerGroup=NOT%20LOGGED%20IN; pr-cookie-consent=[%22all%22]; user_allowed_save_cookie=%7B%221%22%3A1%7D; __cf_bm=_CWMX3ty9baJczJn5ClJEpphNDwm6fr0uk_l2VPN7qw-1711162555-1.0.1.1-86wY6tvuDQZBoCp41F9LTmUC8mg12D1_Z4egDqUQK4r2G5UnSDIcRhfZE_vpShi1XImp6.cgFvDATFX3aYzT2w; form_key=e2EaordnT2xHbYUA; mage-cache-storage={}; mage-cache-storage-section-invalidation={}; PHPSESSID=7dd03719a23ed3c7b06e1ff0e85c4582; form_key=e2EaordnT2xHbYUA; X-Magento-Vary=ad2b3159231b8c9196b420e3d6a9f26286e2fbb1def2cd7a9333c730c25b9c90; mage-cache-sessid=true".parse().unwrap());
+        // Remove the COOKIE header to avoid sending potentially outdated or suspicious cookies
         headers.insert(UPGRADE_INSECURE_REQUESTS, "1".parse().unwrap());
         headers.insert("Sec-Fetch-Dest", "document".parse().unwrap());
         headers.insert("Sec-Fetch-Mode", "navigate".parse().unwrap());
         headers.insert("Sec-Fetch-Site", "none".parse().unwrap());
         headers.insert("Sec-Fetch-User", "?1".parse().unwrap());
-        headers.insert("TE", "trailers".parse().unwrap());
+        headers.insert("Cache-Control", "max-age=0".parse().unwrap());
 
-        Scraper {
-            _client: client,
-            headers,
-        }
+        Scraper { client, headers }
     }
 
     pub async fn get_url(&self, url: &str) -> Result<String, Box<dyn std::error::Error>> {
         let res = self
-            ._client
+            .client
             .get(url)
             .headers(self.headers.clone())
             .send()
