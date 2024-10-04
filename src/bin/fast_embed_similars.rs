@@ -1,7 +1,10 @@
+use dotenvy::dotenv;
 use zero2prod::{db::start_db, models::scrape_embeddings};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    dotenv().expect("No .env file found");
+
     let db = start_db().await.unwrap();
     let conn = db.connect().unwrap();
 
