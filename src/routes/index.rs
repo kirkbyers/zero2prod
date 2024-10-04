@@ -18,7 +18,6 @@ async fn home(conn: web::Data<libsql::Connection>) -> HttpResponse {
         1,
         0,
     );
-    println!("{}", recent_scrape_job);
     let scrape_row = match conn.get_ref().query(&recent_scrape_job, ()).await {
         Ok(mut row) => match row.next().await {
             Ok(row) => row,
