@@ -45,6 +45,7 @@ pub async fn make_green_rec(
         Some(similarity) => similarity,
         None => &SimilarityOptions::Cosine,
     };
+    // TODO: The ids returned here are embedding.ids and they need to be scrapes.id
     let closest_scrapes =
         find_closest_similarity(input_embedding[0].clone(), scrapes, similarity_option);
 
