@@ -15,8 +15,8 @@
   </style>
 </head>
 <body class="center-screen">
-  <div class="px-4 py2 overflow-x-auto max-h-full">
-    <div class="sticky top-0 bg-base-100 z-10 pt-[16px]">
+  <div class="py2 overflow-x-auto max-h-full">
+    <div class="fixed top-0 bg-base-100 z-10 pt-[16px] px-4">
       <form>
         <label class="form-control w-full">
           <input id="description" name="description" type="text" placeholder="Search by Coffee Description" class="input input-bordered w-full" />
@@ -29,7 +29,7 @@
         </label>
       </form>
     </div>
-    <table class="table table-auto">
+    <table class="table table-auto mt-[112px]">
       <thead class="sticky top-[112px] bg-base-100">
         <tr class="">
           <th data-sort="score" class="cursor-pointer">Score</th>
@@ -42,7 +42,7 @@
           <th data-sort="spro_rec" class="cursor-pointer">Spro Rec</th>
         </tr>
       </thead>
-      <tbody class="">
+      <tbody>
       </tbody>
     </table>
   </div>
