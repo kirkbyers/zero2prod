@@ -1,5 +1,5 @@
 use chrono::DateTime;
-use libsql::{Connection, Error};
+use libsql::{params, Connection, Error};
 
 use crate::models::utils::create_paginator;
 
@@ -69,7 +69,13 @@ pub fn select_with_pagination(
     create_paginator("scrapes")(columns, q, sort_by, sort_direction, limit, offset)
 }
 
-fn select_page(filter_non_null_embeddings: bool) -> String {
+fn select_page(filter_non_null_embeddings: &bool, max_batch_id: &Option<&i32>) -> String {
+    let mut where_stmts = vec![];
+    let batch_id_str = match max_batch_id {
+        Some(batch_id) => format!("s.batch_id = {}", batch_id).to_string(),
+        None => "".to_string(),
+    };
+
     let mut result = String::from(
         r#"
         SELECT s.id, s.url, s.content, s.scraped_at, se.embedding
@@ -78,9 +84,19 @@ fn select_page(filter_non_null_embeddings: bool) -> String {
         ON se.scrape_id = s.id
     "#,
     );
-    if filter_non_null_embeddings {
-        result.push_str(" WHERE se.embedding IS NULL");
+
+    if *filter_non_null_embeddings {
+        where_stmts.push("se.embedding IS NULL");
     }
+    if !batch_id_str.is_empty() {
+        where_stmts.push(&batch_id_str);
+    }
+
+    if !where_stmts.is_empty() {
+        result.push_str(" WHERE ");
+        result.push_str(&where_stmts.join(" AND "));
+    }
+
     result.push_str(" ORDER BY scraped_at ASC LIMIT ? OFFSET ?");
     result
 }
@@ -90,11 +106,18 @@ pub async fn get_page(
     limit: u32,
     offset: u32,
     filter_non_null_embeddings: bool,
+    max_batch_id: Option<&i32>,
 ) -> Result<Vec<ScrapeRow>, Error> {
     let mut stmt = conn
-        .prepare(&select_page(filter_non_null_embeddings))
+        .prepare(&select_page(&filter_non_null_embeddings, &max_batch_id))
         .await?;
     let mut rows = stmt.query((limit, offset)).await?;
+    let scrapes: Vec<ScrapeRow> = rows_to_scrape_rows(&mut rows).await?;
+
+    Ok(scrapes)
+}
+
+pub async fn rows_to_scrape_rows(rows: &mut libsql::Rows) -> Result<Vec<ScrapeRow>, Error> {
     let mut scrapes = Vec::new();
 
     while let Ok(Some(row)) = rows.next().await {
@@ -124,4 +147,18 @@ pub async fn get_page(
     }
 
     Ok(scrapes)
+}
+
+pub async fn get_max_batch_id(conn: &Connection) -> Result<i32, Error> {
+    let mut max_batch_id_rows = conn
+        .query("SELECT COALESCE(MAX(batch_id), 0) FROM scrapes", params![])
+        .await?;
+
+    let max_batch_id: i32 = if let Ok(Some(row)) = max_batch_id_rows.next().await {
+        row.get(0)?
+    } else {
+        0
+    };
+
+    Ok(max_batch_id)
 }

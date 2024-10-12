@@ -1,4 +1,4 @@
-use crate::models::scrape;
+use crate::models::scrape::{self, get_max_batch_id};
 use actix_web::{error::ErrorInternalServerError, post, web, Error, HttpResponse};
 use anyhow::Result;
 use fastembed::{InitOptions, TextEmbedding};
@@ -37,7 +37,11 @@ pub async fn make_green_rec(
         .embed(vec![&json.description], Some(1))
         .map_err(ErrorInternalServerError)?;
 
-    let scrapes = scrape::get_page(conn.get_ref().clone(), 150, 0, false)
+    let max_batch_id = get_max_batch_id(&conn)
+        .await
+        .map_err(ErrorInternalServerError)?;
+
+    let scrapes = scrape::get_page(conn.get_ref().clone(), 150, 0, false, Some(&max_batch_id))
         .await
         .unwrap();
 
@@ -45,7 +49,7 @@ pub async fn make_green_rec(
         Some(similarity) => similarity,
         None => &SimilarityOptions::Cosine,
     };
-    // TODO: The ids returned here are embedding.ids and they need to be scrapes.id
+
     let closest_scrapes =
         find_closest_similarity(input_embedding[0].clone(), scrapes, similarity_option);
 

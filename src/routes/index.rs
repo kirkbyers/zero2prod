@@ -2,10 +2,7 @@ use actix_web::{get, web, HttpResponse};
 use libsql::params;
 use tera::{Context, Tera};
 
-use crate::{
-    models::scrape,
-    routes::scrapes,
-};
+use crate::{models::scrape, routes::scrapes};
 
 #[get("/")]
 async fn home(conn: web::Data<libsql::Connection>) -> HttpResponse {
@@ -24,10 +21,7 @@ async fn home(conn: web::Data<libsql::Connection>) -> HttpResponse {
 
     let select_page = scrape::select_with_pagination(
         "id, url, arrival, lot_size, bag_size, score, packaging, cultivar_detail, spro_rec",
-        &format!(
-            "score != '' AND batch_id = {}",
-            max_batch_id
-        ),
+        &format!("score != '' AND batch_id = {}", max_batch_id),
         "score",
         "DESC",
         200,
