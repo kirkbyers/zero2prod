@@ -128,14 +128,24 @@
         })
         .then(response => response.json())
         .then(data => {
-          // window.scrapes = data;
           if (data.length === 0) {
             return;
           }
           const firstRow = tableBody.querySelector(`tr[data-id="${data[0].id}"]`);
           firstRow.className = `${firstRow.className} bg-green-200`;
           if (firstRow) {
-            firstRow.scrollIntoView();
+            // Get the scrollable container
+            const scrollContainer = document.querySelector('.overflow-x-auto');
+            
+            // Calculate the offset of the search UI
+            const searchUIHeight = document.querySelector('.sticky').offsetHeight;
+            
+            // Calculate the position to scroll to
+            const rowTop = firstRow.offsetTop;
+            const scrollPosition = rowTop - searchUIHeight;
+            
+            // Scroll the container
+            scrollContainer.scrollTop = scrollPosition;
           }
         })
         .catch((error) => {
@@ -145,7 +155,6 @@
           formSubmit.innerHTML = 'Go';
         });
       });
-      
       
     });
 
